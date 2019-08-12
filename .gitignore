@@ -1,0 +1,4 @@
+/.idea
+/src/test
+/target
+src/main/resources/private_config.properties
