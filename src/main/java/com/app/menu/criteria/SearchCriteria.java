@@ -1,4 +1,4 @@
-package com.app.service.menu_services;
+package com.app.menu.criteria;
 
 public enum SearchCriteria {
     BY_NAME("Search by name"),

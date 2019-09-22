@@ -14,6 +14,4 @@ public interface CustomerRepository extends CrudRepository<Customer> {
     List<Customer> findByAge(int age);
 
     Optional<Customer> findByNameSurnameEmail(String name, String surname, String email);
-
-    Optional<Customer> findCustomerByPersonalDateFromUser();
 }

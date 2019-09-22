@@ -8,11 +8,10 @@ import com.app.repository.CustomerRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.app.service.cinema_service.SalesStandsService.customerRepository;
-import static com.app.service.cinema_service.SalesStandsService.dataService;
-
 public class CustomerRepositoryImpl implements CustomerRepository {
 
+    // TODO: 08.09.2019 sprawdzic czy nie wystepuje identyczny customer w bazie danych - imie, nazwisko, email.
+    //  jezeli wystepuje to moze byc problem pozniej przy wyszukiwaniu
     @Override
     public void add(Customer customer) {
         int numbersOfInsertedRows = jdbi.withHandle(handle -> handle
@@ -48,7 +47,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public Optional<Customer> findById(Integer id) {
-
         return jdbi.withHandle(handle -> handle.createQuery("select * from customers where id = :id")
                 .bind("id", id)
                 .mapToBean(Customer.class)
@@ -104,16 +102,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public Optional<Customer> findByNameSurnameEmail(String name, String surname, String email) {
-        if (name == null) {
-            throw new MyException("CUSTOMER NAME IS NULL", ExceptionCode.REPOSITORY);
-        }
-        if (surname == null) {
-            throw new MyException("CUSTOMER SURNAME IS NULL", ExceptionCode.REPOSITORY);
-        }
-        if (email == null) {
-            throw new MyException("CUSTOMER EMAIL IS NULL", ExceptionCode.REPOSITORY);
-        }
-
         return jdbi.withHandle(handle -> handle.createQuery("select * from customers where name = :name and " +
                 "surname = :surname and email = :email")
                 .bind("name", name)
@@ -121,14 +109,4 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 .bind("email", email)
         .mapToBean(Customer.class).findFirst());
     }
-
-    @Override
-    public Optional<Customer> findCustomerByPersonalDateFromUser() {
-        Optional<Customer> customer;
-        String name = dataService.getString("Write the name of customer");
-        String surname = dataService.getString("Write the surname of customer");
-        String email = dataService.getString("Write the email address of customer");
-        return customerRepository.findByNameSurnameEmail(name, surname, email);
-    }
-
 }

@@ -25,6 +25,30 @@ public class LoyaltyCardRepositoryImpl implements LoyaltyCardRepository {
 
     @Override
     public void update(LoyaltyCard loyaltyCard) {
+        if (loyaltyCard == null) {
+            throw new MyException("LOYALTY CARD IS NULL", ExceptionCode.REPOSITORY);
+        }
+        LoyaltyCard loyaltyCardFromDB = findById(loyaltyCard.getId()).orElseThrow((
+                () -> new MyException("LOYALTY CARD IS NOT EXIST IN DB", ExceptionCode.REPOSITORY)));
+
+        jdbi.withHandle(handle -> handle.createUpdate("update loyalty_cards set expiration_date = :expiration_date, " +
+                "discount = :discount, movies_quantity = :movies_quantity, current_movies_quantity = :current_movies_quantity " +
+                "where id = :id")
+                .bind("expiration_date", loyaltyCard.getExpirationDate() == null
+                        ? loyaltyCardFromDB.getExpirationDate()
+                        : loyaltyCard.getExpirationDate())
+                .bind("discount", loyaltyCard.getDiscount() == null
+                        ? loyaltyCardFromDB.getDiscount()
+                        : loyaltyCard.getDiscount())
+                .bind("movies_quantity", loyaltyCard.getMoviesQuantity() == null
+                        ? loyaltyCardFromDB.getMoviesQuantity()
+                        : loyaltyCard.getMoviesQuantity())
+                .bind("current_movies_quantity", loyaltyCard.getCurrentMoviesQuantity() == null
+                        ? loyaltyCardFromDB.getCurrentMoviesQuantity()
+                        : loyaltyCard.getCurrentMoviesQuantity())
+                .bind("id", loyaltyCard.getId())
+                .execute()
+        );
 
     }
 
@@ -60,7 +84,7 @@ public class LoyaltyCardRepositoryImpl implements LoyaltyCardRepository {
 
     @Override
     public Optional<LoyaltyCard> findLastLoyaltyCard() {
-        Integer biggestId = findAll().stream().map(lc -> lc.getId()).max(Comparator.naturalOrder()).orElseThrow(
+        Integer biggestId = findAll().stream().map(LoyaltyCard::getId).max(Comparator.naturalOrder()).orElseThrow(
                 () -> new MyException("THERE IS NO BIGGEST ELEMENT", ExceptionCode.LOYALTY_CARD_REPOSITORY));
         return findById(biggestId);
 

@@ -2,18 +2,18 @@ package com.app.repository;
 
 import com.app.model.Customer;
 import com.app.model.Movie;
-import com.app.model.SalesStands;
+import com.app.model.SalesStand;
 
-import java.util.Date;
+import java.time.LocalTime;
 import java.util.List;
 
-public interface SalesStandsRepository extends CrudRepository<SalesStands> {
+public interface SalesStandsRepository extends CrudRepository<SalesStand> {
 
-    List<SalesStands> findByStartDateTime();
+    List<SalesStand> findByStartDateTime();
 
-    void addCustomerWithTicket(Customer customer, Movie movie, Date startTime);
+    void addCustomerWithTicket(Customer customer, Movie movie, LocalTime startTime);
 
     int getTicketQuantityBoughtByCustomer(Customer customer);
 
-    List<Movie> retrieveAllMoviesBoughtByCustomer(Customer customer);
+    List<Movie> findMovieByCustomerId(Customer customer);
 }

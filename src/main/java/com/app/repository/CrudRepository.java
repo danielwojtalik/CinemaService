@@ -1,6 +1,6 @@
 package com.app.repository;
 
-import com.app.connection.DbConnection;
+import com.app.repository.connection.DbConnection;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;

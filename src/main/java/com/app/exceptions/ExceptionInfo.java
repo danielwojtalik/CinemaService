@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 @Data
 @AllArgsConstructor
@@ -16,12 +17,12 @@ public class ExceptionInfo {
 
     private String description;
     private ExceptionCode exceptionCode;
-    private LocalDateTime exceptionDate;
+    private LocalDate exceptionDate;
 
 
     public ExceptionInfo(String description, ExceptionCode exceptionCode) {
         this.description = description;
         this.exceptionCode = exceptionCode;
-        this.exceptionDate = LocalDateTime.now();
+        this.exceptionDate = LocalDate.now();
     }
 }

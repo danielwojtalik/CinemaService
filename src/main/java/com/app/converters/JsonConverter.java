@@ -2,18 +2,30 @@ package com.app.converters;
 
 import com.app.exceptions.ExceptionCode;
 import com.app.exceptions.MyException;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
+import lombok.extern.log4j.Log4j;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-
+@Log4j
 public abstract class JsonConverter<T> {
     private final String jsonFileName;
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("dd/MM/yyyy").create();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
+                @Override
+                public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                    LocalDate localDate =  LocalDate.parse(json.getAsJsonPrimitive().getAsString(), DateTimeFormatter.ofPattern("dd/MM/uuuu"));
+                    log.info(localDate.toString());
+                    return localDate;
+                }
+            })
+            .setPrettyPrinting()
+            .create();
     private final Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
     public JsonConverter(String jsonFileName) {
@@ -37,7 +49,7 @@ public abstract class JsonConverter<T> {
         try (FileReader fileReader = new FileReader(jsonFileName)) {
             return Optional.of(gson.fromJson(fileReader, type));
         } catch (Exception e) {
-            throw new MyException("GSON EXCEPTION", ExceptionCode.GSON);
+            throw new MyException(e.getMessage(), ExceptionCode.GSON);
         }
     }
 

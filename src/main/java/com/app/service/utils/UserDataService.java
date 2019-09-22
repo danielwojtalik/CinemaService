@@ -1,33 +1,28 @@
-package com.app.service;
+package com.app.service.utils;
 
 import com.app.exceptions.ExceptionCode;
 import com.app.exceptions.MyException;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
-public class UserDataService {
+public final class UserDataService {
 
-    private static final Scanner sc = new Scanner(System.in);
-    private static final UserDataService instance = new UserDataService();
-    private static final String dateFormat = "dd/MM/yyyy";
-
-    public static UserDataService getInstance() {
-        return instance;
-    }
+    private static Scanner sc = new Scanner(System.in);
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private UserDataService() {
     }
 
-    public String getString(String message) {
+    public static String getString(String message) {
         System.out.println(message);
         return sc.nextLine();
     }
 
-    public String getStringWithValidator(String message, Predicate<String> validator) {
+    public static String getStringWithValidator(String message, Predicate<String> validator) {
         System.out.println(message);
         String value = sc.nextLine();
         if (validator.test(value)) {
@@ -38,17 +33,16 @@ public class UserDataService {
         }
     }
 
-    public int getInt(String message) {
+    public static int getInt(String message) {
         System.out.println(message);
-        int value;
         try {
-            return value = Integer.parseInt(sc.nextLine());
+            return Integer.parseInt(sc.nextLine());
         } catch (Exception e) {
             throw new MyException("WRONG INT INPUT", ExceptionCode.WRONG_INPUT);
         }
     }
 
-    public int getIntWithValidator(String message, Predicate<Integer> validator) {
+    public static int getIntWithValidator(String message, Predicate<Integer> validator) {
         System.out.println(message);
         int value;
         try {
@@ -64,7 +58,7 @@ public class UserDataService {
         }
     }
 
-    public BigDecimal getBigDecimal(String message, Predicate<BigDecimal> validator) {
+    public static BigDecimal getBigDecimal(String message, Predicate<BigDecimal> validator) {
         System.out.println(message);
         BigDecimal value;
         try {
@@ -80,27 +74,48 @@ public class UserDataService {
         }
     }
 
-    public boolean isMailAddress(String adress) {
+    public static boolean isMailAddress(String adress) {
         String addressRegex = "[a-z]+\\.[a-z]+@([a-z0-9]+\\.)+[a-z]+";
         return adress.matches(addressRegex);
 
     }
 
-    public Date getDate(String message) {
+    public static LocalDate getDate(String message) {
         System.out.println("Date need to be in format dd/MM/yyyy e.g. 12/05/2018");
         String dateFromUser = getString(message);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-        Date date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+        LocalDate localTime;
+
         try {
-            date = simpleDateFormat.parse(dateFromUser);
+            localTime = LocalDate.parse(dateFromUser, formatter);
         } catch (Exception e) {
             throw new MyException("CAN NOT GET DATE FROM USER", ExceptionCode.WRONG_INPUT);
         }
-
-        return date;
+        return localTime;
     }
 
-    public void close() {
-        sc.close();
+    public static void close() {
+        if (sc != null) {
+            sc.close();
+            sc = null;
+        }
+    }
+
+    public static boolean makeDecision(String message) {
+        System.out.println(message);
+        boolean repeat = true;
+        while (repeat) {
+            String decision = getString("Y\\N");
+            switch (decision) {
+                case "Y" -> {
+                    return true;
+                }
+                case "N" -> {
+                    return false;
+                }
+            }
+            System.err.println("Try again - please write \"Y\" for yes OR \"N\" for now");
+        }
+        return false;
     }
 }

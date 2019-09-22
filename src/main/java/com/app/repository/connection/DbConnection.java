@@ -1,4 +1,4 @@
-package com.app.connection;
+package com.app.repository.connection;
 
 import org.jdbi.v3.core.Jdbi;
 
@@ -19,7 +19,7 @@ public class DbConnection {
     }
 
     private void connect() {
-        jdbi = Jdbi.create("jdbc:mysql://localhost:3306/cinema_tickets?useUnicode=true&useJDBCCompliantTimezoneShift=true" +
+        jdbi = Jdbi.create("jdbc:mysql://localhost:3306/cinema_tickets?useUnicode=true&useJDBCCompliantTimezoneShift=false" +
                 "&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "root", "root");
     }
 
@@ -38,6 +38,7 @@ public class DbConnection {
                 "id integer primary key auto_increment, " +
                 "expiration_date date not null," +
                 "discount decimal(4,2) not null," +
+                "current_movies_quantity integer," +
                 "movies_quantity integer not null" +
                 ");"
         ));
