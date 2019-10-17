@@ -5,12 +5,14 @@ import com.app.exceptions.MyException;
 import com.app.model.Movie;
 import com.app.repository.MovieRepository;
 import com.app.service.cinema_service.MovieService;
+import lombok.extern.log4j.Log4j;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j
 public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
@@ -18,10 +20,12 @@ public class MovieRepositoryImpl implements MovieRepository {
         if (movie == null) {
             throw new MyException("MOVIE IS NULL", ExceptionCode.REPOSITORY);
         }
+
         String movieTitle = movie.getTitle();
         if (findByTitle(movieTitle).size() != 0) {
             throw new MyException("MOVIE IS ALREADY EXISTS IN CINEMA PROGRAMME", ExceptionCode.REPOSITORY);
         }
+        log.info(movie.getReleaseDate().toString());
         jdbi.withHandle(handle -> handle
                 .createUpdate("insert into movies (title, genre, price, duration, release_date) " +
                         "values (:title, :genre, :price, :duration, :release_date)")

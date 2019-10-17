@@ -10,6 +10,7 @@ import com.app.repository.CustomerRepository;
 import com.app.repository.LoyaltyCardRepository;
 import com.app.repository.MovieRepository;
 import com.app.repository.SalesStandsRepository;
+import com.app.service.TicketConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
@@ -18,6 +19,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +33,14 @@ public class SalesStandsService {
     private final LoyaltyCardRepository loyaltyCardRepository;
     private final MovieRepository movieRepository;
     private static final String DATE_FORMAT = "HH:mm";
-    private static final BigDecimal START_DISCOUNT = new BigDecimal("0.1");
-    private final Integer MOVIES_LIMIT_FOR_CARD = 2;
+    private static final BigDecimal START_DISCOUNT = new BigDecimal("0.05");
+    private static final BigDecimal DISCOUNT_INCREASE = new BigDecimal("0.01");
+    private final Integer MOVIE_LIMIT_INCREASE = 5;
 
 
+    public List<SalesStand> findAllSaleStands() {
+        return salesStandsRepository.findAll();
+    }
     public Map<Integer, LocalTime> getAvailableTime() {
         LocalTime lastAvailableTime = LocalTime.now().withHour(22).withMinute(30).withSecond(0);
         LocalTime currentTime = LocalTime.now();
@@ -55,21 +61,6 @@ public class SalesStandsService {
         return availableStartTime;
     }
 
-    public Movie findMovie(Integer id) {
-        return movieRepository.findById(id).orElseThrow(() -> new MyException("MOVIE DOES NOT EXIST",
-                ExceptionCode.SALES_STAND_SERVICE));
-    }
-
-    public Customer findCustomer(Integer id) {
-        return customerRepository.findById(id).orElseThrow(() -> new MyException("CUSTOMER DOES NOT EXIST"
-                , ExceptionCode.SALES_STAND_SERVICE));
-    }
-
-
-    public static BigDecimal calculateFinalTicketPrice(Customer customer, Movie movie, BigDecimal discount) {
-        return customer.getLoyaltyCardId() == null ? movie.getPrice() : movie.getPrice()
-                .multiply(BigDecimal.ONE.subtract(discount));
-    }
 
     public void offerFirstLoyaltyCard(Customer customer, boolean isWilling) {
         if (isWilling) {
@@ -77,7 +68,8 @@ public class SalesStandsService {
             LoyaltyCard loyaltyCard = LoyaltyCard.builder()
                     .expirationDate(expirationDate)
                     .discount(START_DISCOUNT)
-                    .moviesQuantity(MOVIES_LIMIT_FOR_CARD)
+                    .moviesQuantity(retrieveAllMoviesBoughtByCustomer(customer).size() + MOVIE_LIMIT_INCREASE)
+                    .currentMoviesQuantity(retrieveAllMoviesBoughtByCustomer(customer).size())
                     .build();
 
             loyaltyCardRepository.add(loyaltyCard);
@@ -96,17 +88,19 @@ public class SalesStandsService {
         );
         if (isWilling) {
             BigDecimal currentDiscount = loyaltyCard.getDiscount();
-            if (loyaltyCard.getExpirationDate().isAfter(LocalDate.now())) {
-                currentDiscount = currentDiscount.add(new BigDecimal("0.01"));
+            if (loyaltyCard.getExpirationDate().isAfter(LocalDate.now())
+                    && currentDiscount.compareTo(new BigDecimal("0.5")) < 1) {
+                currentDiscount = currentDiscount.add(DISCOUNT_INCREASE);
             }
             LoyaltyCard newLoyaltyCard = LoyaltyCard.builder()
                     .discount(currentDiscount)
                     .expirationDate(LocalDate.now().plusYears(3))
-                    .moviesQuantity(MOVIES_LIMIT_FOR_CARD)
+                    .moviesQuantity(loyaltyCard.getMoviesQuantity() + MOVIE_LIMIT_INCREASE)
+                    .currentMoviesQuantity(loyaltyCard.getCurrentMoviesQuantity())
                     .build();
             loyaltyCardRepository.add(newLoyaltyCard);
             LoyaltyCard loyaltyCardFromDB = loyaltyCardRepository.findLastLoyaltyCard().orElseThrow(
-                    () -> new MyException("THERE IS ANY LOYALTY CARD IN DB", ExceptionCode.REPOSITORY)
+                    () -> new MyException("THERE IS ANY LOYALTY CARD IN DB", ExceptionCode.SALES_STAND_SERVICE)
             );
             customer.setLoyaltyCardId(loyaltyCardFromDB.getId());
             customerRepository.update(customer);
@@ -114,17 +108,20 @@ public class SalesStandsService {
         }
     }
 
-    public void addCustomerWithTicket(Customer customer, Movie movie, LocalTime startTime) {
-        if (customer == null) {
+    public void sellTicket(TicketConfiguration ticketConfiguration) {
+        if (ticketConfiguration.getCustomer() == null) {
             throw new MyException("CUSTOMER IS NULL", ExceptionCode.SALES_STAND_SERVICE);
         }
-        if (movie == null) {
+        if (ticketConfiguration.getMovie() == null) {
             throw new MyException("MOVIE IS NULL", ExceptionCode.SALES_STAND_SERVICE);
         }
-        if (startTime == null) {
+        if (ticketConfiguration.getStartTime() == null) {
             throw new MyException("START TIME IS NULL", ExceptionCode.SALES_STAND_SERVICE);
         }
-        salesStandsRepository.addCustomerWithTicket(customer, movie, startTime);
+        if (ticketConfiguration.getPriceWithDiscount() == null) {
+            throw new MyException("PRICE WITH DISCOUNT IS NULL", ExceptionCode.SALES_STAND_SERVICE);
+        }
+        salesStandsRepository.addSaleStand(ticketConfiguration);
         log.info("TICKET SUCCESSFULLY SELL");
     }
 
@@ -135,21 +132,37 @@ public class SalesStandsService {
         return salesStandsRepository.getTicketQuantityBoughtByCustomer(customer);
     }
 
-    public String prepareConfirmationMessage(Customer customer, Movie movie, LocalTime startTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+    public String prepareConfirmationMessage(TicketConfiguration ticketConfiguration) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+        final Customer customer = ticketConfiguration.getCustomer();
+        final Movie movie = ticketConfiguration.getMovie();
+        final LocalTime startTime = ticketConfiguration.getStartTime();
+        final BigDecimal finalPrice = ticketConfiguration.getPriceWithDiscount();
         String messageContent = "Hello, %s %s!\nYou have already successfully bought ticket for movie: %s.\n" +
                 "The movie starts today at: %s.\nThe ticket price is equal: %s zł.";
-        BigDecimal finalPrice = calculateFinalTicketPrice(customer, movie, START_DISCOUNT);
-
         return String.format(messageContent, customer.getName(), customer.getSurname(), movie.getTitle(),
                 formatter.format(startTime), finalPrice.setScale(2, RoundingMode.CEILING));
     }
 
-    public List<Movie> retrieveAllMovieBoughtByCustomer(Customer customer) {
-        return salesStandsRepository.findMovieByCustomerId(customer);
+    public List<Movie> retrieveAllMoviesBoughtByCustomer(Customer customer) {
+        return salesStandsRepository.findAllMoviesForCustomer(customer);
     }
 
     public List<SalesStand> retrieveAllSalesStands() {
         return salesStandsRepository.findAll();
     }
+
+    public List<Movie> findAllMoviesSoldInCinema() {
+        List<SalesStand> salesStands = retrieveAllSalesStands();
+        List<Movie> movies = new ArrayList<>();
+        salesStands.forEach(st ->
+                movies.add(movieRepository.findById(st.getMovieId()).orElseThrow(
+                        () -> new MyException("MOVIE DOES NOT EXIST", ExceptionCode.SALES_STAND_SERVICE))));
+        return movies;
+    }
+
+    public List<Movie> findAllMoviesInTimeRange(LocalDate startTime, LocalDate finishDate) {
+        return salesStandsRepository.findMoviesInConcreteTimeRange(startTime, finishDate);
+    }
+
 }

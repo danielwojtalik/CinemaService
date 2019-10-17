@@ -28,9 +28,9 @@ public class Main {
         CustomerService customerService = new CustomerService(customerRepository);
         SalesStandsService salesStandsService = new SalesStandsService(customerRepository, salesStandsRepository, loyaltyCardRepository, movieRepository);
         MovieService movieService = new MovieService(movieRepository, salesStandsService);
-        LoyaltyCardService loyaltyCardService = new LoyaltyCardService(loyaltyCardRepository);
+        LoyaltyCardService loyaltyCardService = new LoyaltyCardService(loyaltyCardRepository,salesStandsService);
         TransactionHistoryService transactionHistoryService = new TransactionHistoryService(movieRepository);
-        StatisticsService statisticsService = new StatisticsService(salesStandsService);
+        StatisticsService statisticsService = new StatisticsService(salesStandsService, customerService, movieService);
         return new MainMenu(customerService, movieService, salesStandsService, loyaltyCardService, transactionHistoryService, statisticsService);
     }
 

@@ -16,10 +16,12 @@ public class LoyaltyCardRepositoryImpl implements LoyaltyCardRepository {
             throw new MyException("LOYALTY CARD IS NULL", ExceptionCode.REPOSITORY);
         }
         jdbi.useTransaction(handle -> handle.createUpdate("insert into loyalty_cards (expiration_date, " +
-                "discount, movies_quantity) values (:expiration_date, :discount, :movies_quantity)")
+                "discount, movies_quantity, current_movies_quantity) values (:expiration_date, :discount, :movies_quantity," +
+                " :current_movies_quantity)")
                 .bind("expiration_date", loyaltyCard.getExpirationDate())
                 .bind("discount", loyaltyCard.getDiscount())
                 .bind("movies_quantity", loyaltyCard.getMoviesQuantity())
+                .bind("current_movies_quantity", loyaltyCard.getCurrentMoviesQuantity())
                 .execute());
     }
 

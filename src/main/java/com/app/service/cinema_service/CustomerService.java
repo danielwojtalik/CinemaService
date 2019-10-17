@@ -34,6 +34,11 @@ public class CustomerService {
         customerRepository.deleteByID(id);
     }
 
+    public Customer findCustomerById(Integer id) {
+        return customerRepository.findById(id).orElseThrow(() -> new MyException("CUSTOMER DOES NOT EXIST"
+                , ExceptionCode.SALES_STAND_SERVICE));
+    }
+
     public List<Customer> findAll() {
         return customerRepository.findAll();
     }

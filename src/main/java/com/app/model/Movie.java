@@ -21,5 +21,7 @@ public class Movie {
     private BigDecimal price;
     private Integer duration;
     private LocalDate releaseDate;
+    // https://stackoverflow.com/questions/54666536/date-one-day-backwards-after-select-from-mysql-db
+    // private ZonedDateTime releaseDate;
 
 }

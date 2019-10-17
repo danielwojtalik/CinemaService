@@ -3,9 +3,5 @@
   "genre": "THRILLER",
   "price": 15,
   "duration": 118,
-  "releaseDate": {
-    "year": 1991,
-    "month": 12,
-    "day": 25
-  }
+  "releaseDate": "25/12/1991"
 }

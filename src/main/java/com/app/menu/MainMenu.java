@@ -5,12 +5,14 @@ import com.app.model.Customer;
 import com.app.model.LoyaltyCard;
 import com.app.model.Movie;
 import com.app.model.MovieType;
+import com.app.service.TicketConfiguration;
 import com.app.service.cinema_service.*;
-import com.app.service.email_service.EmailServiceKM;
+import com.app.service.email_service.EmailService;
 import com.app.service.utils.UserDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static com.app.main.ApplicationConstants.MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD;
+import static j2html.TagCreator.body;
+import static j2html.TagCreator.h1;
 
 @Log4j
 @RequiredArgsConstructor
@@ -27,8 +34,6 @@ public final class MainMenu {
     private static final String SURNAME = "Write the surname of customer:";
     private static final String AGE = "Write the age of the customer";
     private static final String EMAIL = "Write the email address of the customer:";
-
-    private final Integer TICKET_AMOUNT_FOR_DISCOUNT = 1;
 
     private final CustomerService customerService;
     private final MovieService movieService;
@@ -114,31 +119,39 @@ public final class MainMenu {
         Customer customer = getCustomerFromDB();
         // choose movie by customer
         movieService.returnAllMovies().forEach(System.out::println);
-        int id = retrieveMovieIdFromUser("Please write movie id", mid -> mid > 0);
-        Movie movie = salesStandsService.findMovie(id);
+        int kk = 0;
+        int id = retrieveMovieIdFromUser("Please write movie id", mid -> mid > kk);
+        Movie movie = movieService.findMovieById(id);
 
         // choose start time of the movie
         Map<Integer, LocalTime> availableTime = salesStandsService.getAvailableTime();
         LocalTime startTime = retrieveMovieStartTimeFromUser(availableTime);
 
         // sell ticket
-        salesStandsService.addCustomerWithTicket(customer, movie, startTime);
+        LoyaltyCard loyaltyCard = customer.getLoyaltyCardId() != null ? loyaltyCardService
+                .findLoyaltyCardById(customer.getLoyaltyCardId()) : null;
+        TicketConfiguration ticketConfiguration = new TicketConfiguration();
+        ticketConfiguration.setCustomer(customer);
+        ticketConfiguration.setMovie(movie);
+        ticketConfiguration.setStartTime(startTime);
+        ticketConfiguration.setPriceWithDiscount(loyaltyCard != null ? (loyaltyCard.getDiscount().add(BigDecimal.ONE))
+                .multiply(movie.getPrice()) : movie.getPrice());
+        salesStandsService.sellTicket(ticketConfiguration);
 
-        // increment movies amount bought by customer in loyalty card if exists
+        // update movies amount bought by customer in loyalty card if exists
         if (customer.getLoyaltyCardId() != null) {
-            loyaltyCardService.incrementMoviesAmount(customer);
+            loyaltyCardService.updateMoviesQuantity(customer);
 
         }
         // menage loyalty card
         int ticketsBoughtByCustomer = salesStandsService.getTotalTicketAmountBoughtByCustomer(customer);
-        if (TICKET_AMOUNT_FOR_DISCOUNT <= ticketsBoughtByCustomer && customer.getLoyaltyCardId() == null) {
-            boolean isWilling = UserDataService.makeDecision("You have bought " + TICKET_AMOUNT_FOR_DISCOUNT +
+        if (MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD <= ticketsBoughtByCustomer && customer.getLoyaltyCardId() == null) {
+            boolean isWilling = UserDataService.makeDecision("You have bought " + MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD +
                     " times in our cinema. Do you like get loyalty card?");
             salesStandsService.offerFirstLoyaltyCard(customer, isWilling);
-        } else if (customer.getLoyaltyCardId() != null) {
-            LoyaltyCard loyaltyCard = loyaltyCardService.findLoyaltyCardById(customer.getLoyaltyCardId());
-            int currentAmountOfTickets = loyaltyCard.getCurrentMoviesQuantity();
+        } else if (customer.getLoyaltyCardId() != null && loyaltyCard != null) {
             int availableAmountOfTickets = loyaltyCard.getMoviesQuantity();
+            int currentAmountOfTickets = loyaltyCard.getCurrentMoviesQuantity();
             LocalDate expiredCardDate = loyaltyCard.getExpirationDate();
             LocalDate today = LocalDate.now();
             if (currentAmountOfTickets >= availableAmountOfTickets || expiredCardDate.isBefore(today)) {
@@ -146,11 +159,11 @@ public final class MainMenu {
                         "you have rich the movie limit from card. Do you like get new loyalty card?");
                 salesStandsService.offerNewCardIfPossible(customer, isWilling);
             }
-
         }
+
         // send email
-        String message = salesStandsService.prepareConfirmationMessage(customer, movie, startTime);
-        EmailServiceKM.sendAsHtml(customer.getEmail(), "Confirmation", message);
+        String message = salesStandsService.prepareConfirmationMessage(ticketConfiguration);
+        EmailService.sendAsHtml(customer.getEmail(), "Confirmation", message);
     }
 
     private Customer getCustomerFromDB() {
@@ -180,8 +193,8 @@ public final class MainMenu {
         List<Movie> moviesAfterFilter = movieService.retrieveAllMoviesForCustomerWithFilters(predicates, customer);
         showMovieFromHistory(moviesAfterFilter);
         //send email
-        String transactionHistory = transactionHistoryService.prepareContentOfTransactionHistory(moviesAfterFilter,customer);
-        EmailServiceKM.sendAsHtml(customer.getEmail(), "Transaction history", transactionHistory);
+        String transactionHistory = transactionHistoryService.prepareContentOfTransactionHistory(moviesAfterFilter, customer);
+        EmailService.sendAsHtml(customer.getEmail(), "Transaction history", transactionHistory);
     }
 
     private List<Predicate<Movie>> setupMoviesSearchConfiguration(Customer customer) {
@@ -236,10 +249,38 @@ public final class MainMenu {
     }
 
     private void option7() {
-        Map<Movie, List<Customer>> customers = statisticsService.retrieveMoviesWithCustomers();
-        customers
-                .forEach((key, value) -> System.out.println(key.toString() + ":\n" + value + "\n"));
 
+        System.out.println("CLIENT WHO SPENT MOST MONEY FOR PARTICULAR MOVIE TYPE (GENRE)...");
+        Map<MovieType, Customer> bestCustomersInMovieTypes = statisticsService.retrieveBestCustomerForCategory();
+        bestCustomersInMovieTypes
+                .forEach((key, value) -> System.out.println(key.toString() + ":\n" + value.getName() + " "
+                        + value.getSurname() + " with id  = " + value.getId()));
+
+        System.out.println("\nHOW MANY TICKETS HAS BEEN SOLD FOR EVERY MOVIE TYPE IN TIME SLOT...");
+        LocalDate startDate = UserDataService.getDate("Write start date:");
+        LocalDate finishDate = UserDataService.getDate("Write finish date:");
+
+        Map<MovieType, Long> ticketSoldInCategory = statisticsService.
+                retrieveAllTicketSalesInEachCategoryInTimeRange(startDate, finishDate);
+
+        ticketSoldInCategory
+                .forEach((key, value) -> System.out.println(key.toString() + ": " + value));
+
+        System.out.println("\nHOW MANY TIMES CUSTOMER BOUGHT TICKET FOR EACH MOVIE");
+        Map<Customer, Map<Movie, Long>> customersWithAmountOfParticularMovie = statisticsService.retrieveNumberOfEachMoviesForClient();
+        customersWithAmountOfParticularMovie.forEach((key, value) -> System.out.println("Customer " + key.getName()
+                + " " + key.getSurname() + " with ID equal " + key.getId() + " has bought ticket for movies: \n"
+                + value.entrySet().stream().map(entry -> entry.getKey().getTitle() + " " + entry.getValue() + " times")
+                .collect(Collectors.joining("; "))));
+
+        System.out.println("\n TOTAL PRICE FOR ALL TICKETS IS..." + statisticsService.retrieveTotalTicketPriceSoldInCinema());
+
+
+        String html = body(
+                h1("Hello, World!")
+        ).render();
+
+        System.out.println(html);
     }
 
     private void option8() {

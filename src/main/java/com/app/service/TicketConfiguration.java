@@ -1,7 +1,8 @@
-package com.app.model;
+package com.app.service;
 
+import com.app.model.Customer;
+import com.app.model.Movie;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,12 +12,9 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-
-
-public class SalesStand {
-    private Integer customerId;
-    private Integer movieId;
-    private LocalTime localTime;
+public class TicketConfiguration {
+    private Customer customer;
+    private Movie movie;
+    private LocalTime startTime;
     private BigDecimal priceWithDiscount;
 }

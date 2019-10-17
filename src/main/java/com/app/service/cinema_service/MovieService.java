@@ -24,6 +24,15 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final SalesStandsService salesStandsService;
 
+    public List<Movie> findAll() {
+        return movieRepository.findAll();
+    }
+
+    public Movie findMovieById (Integer id) {
+        return movieRepository.findById(id).orElseThrow(() -> new MyException("MOVIE DOES NOT EXIST",
+                ExceptionCode.MOVIE_SERVICE));
+    }
+
     public void addMovie(Movie movie) {
         movieRepository.add(movie);
         log.info("Movie have been added successfully");
@@ -74,11 +83,12 @@ public class MovieService {
                 .append(title)
                 .append(".json").toString();
         MovieConverter movieConverter = new MovieConverter(fullPathToFile);
-        return movieConverter.fromJson().orElseThrow(() -> new MyException("CAN NOT FIND MOVIE IN RESOURCES", ExceptionCode.MAIN_MENU));
+        return movieConverter.fromJson().orElseThrow(() -> new MyException("CAN NOT FIND MOVIE IN RESOURCES",
+                ExceptionCode.MOVIE_SERVICE));
     }
 
     public List<Movie> retrieveAllMoviesForCustomerWithFilters(List<Predicate<Movie>> predicates, Customer customer) {
-        List<Movie> moviesSeenByCustomer = salesStandsService.retrieveAllMovieBoughtByCustomer(customer);
+        List<Movie> moviesSeenByCustomer = salesStandsService.retrieveAllMoviesBoughtByCustomer(customer);
         for (Predicate<Movie> pred : predicates) {
             moviesSeenByCustomer = moviesSeenByCustomer
                     .stream()

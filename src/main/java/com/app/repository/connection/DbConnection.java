@@ -15,15 +15,15 @@ public class DbConnection {
 
     private DbConnection() {
         connect();
-        createTable();
+        createTables();
     }
 
     private void connect() {
-        jdbi = Jdbi.create("jdbc:mysql://localhost:3306/cinema_tickets?useUnicode=true&useJDBCCompliantTimezoneShift=false" +
-                "&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "root", "root");
+        jdbi = Jdbi.create("jdbc:mysql://localhost:3306/cinema_tickets?dateStrings=true&useUnicode=true&useJDBCCompliantTimezoneShift=false" +
+                "&useLegacyDatetimeCode=false&serverTimezone=Europe/Warsaw&useSSL=false", "root", "root");
     }
 
-    private void createTable() {
+    private void createTables() {
         jdbi.useHandle(handle -> handle.execute("create table if not exists movies ( " +
                 "id integer primary key auto_increment, " +
                 "title varchar(50) not null, " +
@@ -38,7 +38,7 @@ public class DbConnection {
                 "id integer primary key auto_increment, " +
                 "expiration_date date not null," +
                 "discount decimal(4,2) not null," +
-                "current_movies_quantity integer," +
+                "current_movies_quantity integer not null," +
                 "movies_quantity integer not null" +
                 ");"
         ));
@@ -59,6 +59,7 @@ public class DbConnection {
                 "customer_id integer," +
                 "movie_id integer," +
                 "start_date_time TimeStamp," +
+                "price_with_discount decimal (4,2) not null default 0, "+
                 "foreign key (customer_id) references customers(id) on delete cascade on update cascade," +
                 "foreign key (movie_id) references movies(id) on delete cascade on update cascade" +
                 ");"
