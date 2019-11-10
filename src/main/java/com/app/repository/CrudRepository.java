@@ -1,24 +1,21 @@
 package com.app.repository;
 
-import com.app.repository.connection.DbConnection;
-import org.jdbi.v3.core.Jdbi;
-
 import java.util.List;
 import java.util.Optional;
 
-public interface CrudRepository<T> {
+public interface CrudRepository<T, ID> {
 
-     Jdbi jdbi = DbConnection.getInstance().getJdbi();
+//     Jdbi jdbi = DbConnection.getInstance().getJdbi();
+
+    List<T> findAll();
+
+    Optional<T> findById(ID id);
 
     void add(T t);
 
     void update(T t);
 
-    Optional<T> findById(Integer id);
-
-    List<T> findAll();
-
-    void deleteByID(Integer id);
-
     void deleteAll();
+
+    void deleteByID(ID id);
 }

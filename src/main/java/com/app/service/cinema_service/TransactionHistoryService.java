@@ -4,7 +4,7 @@ import com.app.exceptions.ExceptionCode;
 import com.app.exceptions.MyException;
 import com.app.model.Customer;
 import com.app.model.Movie;
-import com.app.repository.MovieRepository;
+import com.app.repository.impl.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 

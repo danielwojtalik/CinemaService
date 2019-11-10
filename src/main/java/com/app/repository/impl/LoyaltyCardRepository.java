@@ -3,13 +3,13 @@ package com.app.repository.impl;
 import com.app.exceptions.ExceptionCode;
 import com.app.exceptions.MyException;
 import com.app.model.LoyaltyCard;
-import com.app.repository.LoyaltyCardRepository;
+import com.app.repository.AbstractCrudRepository;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class LoyaltyCardRepositoryImpl implements LoyaltyCardRepository {
+public class LoyaltyCardRepository extends AbstractCrudRepository<LoyaltyCard, Integer> {
     @Override
     public void add(LoyaltyCard loyaltyCard) {
         if (loyaltyCard == null) {
@@ -84,12 +84,10 @@ public class LoyaltyCardRepositoryImpl implements LoyaltyCardRepository {
 
     }
 
-    @Override
     public Optional<LoyaltyCard> findLastLoyaltyCard() {
         Integer biggestId = findAll().stream().map(LoyaltyCard::getId).max(Comparator.naturalOrder()).orElseThrow(
                 () -> new MyException("THERE IS NO BIGGEST ELEMENT", ExceptionCode.LOYALTY_CARD_REPOSITORY));
         return findById(biggestId);
-
 
     }
 }

@@ -5,10 +5,10 @@ import com.app.model.Customer;
 import com.app.model.Movie;
 import com.app.model.MovieType;
 import com.app.model.SalesStand;
-import com.app.repository.CustomerRepository;
-import com.app.repository.LoyaltyCardRepository;
-import com.app.repository.MovieRepository;
-import com.app.repository.SalesStandsRepository;
+import com.app.repository.impl.CustomerRepository;
+import com.app.repository.impl.LoyaltyCardRepository;
+import com.app.repository.impl.MovieRepository;
+import com.app.repository.impl.SalesStandsRepository;
 import com.app.service.cinema_service.CustomerService;
 import com.app.service.cinema_service.MovieService;
 import com.app.service.cinema_service.SalesStandsService;
@@ -103,13 +103,11 @@ public class StatisticsServiceTest {
 
         when(customerRepository.findAll()).thenReturn(List.of(c1, c2));
         when(salesStandsRepository.findAllMoviesForCustomer(c1))
-                .thenReturn(List.of(m1, m2, m3));
-        when(salesStandsRepository.findAllMoviesForCustomer(Customer.builder().name("N2").surname("S2").build()))
-                .thenReturn(List.of(m4, m4));
+                .thenReturn(List.of(m1, m2, m3, m4));
+        when(salesStandsRepository.findAllMoviesForCustomer(c2))
+                .thenReturn(List.of(m2, m2));
         //when
         Map<MovieType, Customer> movieTypeWithBestCustomer = statisticsService.retrieveBestCustomerForCategory();
-        // TODO: 16.10.2019 trzeba by zrobic map.put(k,v)
-        //  i wtedy powinno to zadzialac
         Map<MovieType, Customer> expectedMovieTypeWithBestCustomer = Map.of(
                 MovieType.COMEDY, c1,
                 MovieType.DRAMA, c1,

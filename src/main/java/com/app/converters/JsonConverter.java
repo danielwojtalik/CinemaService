@@ -12,21 +12,22 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+
 @Log4j
 public abstract class JsonConverter<T> {
     private final String jsonFileName;
+    private final Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
                 @Override
                 public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                    LocalDate localDate =  LocalDate.parse(json.getAsJsonPrimitive().getAsString(), DateTimeFormatter.ofPattern("dd/MM/uuuu"));
+                    LocalDate localDate = LocalDate.parse(json.getAsJsonPrimitive().getAsString(), DateTimeFormatter.ofPattern("dd/MM/uuuu"));
                     log.info(localDate.toString());
                     return localDate;
                 }
             })
             .setPrettyPrinting()
             .create();
-    private final Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
     public JsonConverter(String jsonFileName) {
         this.jsonFileName = jsonFileName;
@@ -36,7 +37,7 @@ public abstract class JsonConverter<T> {
     public void toJson(final T element) {
         try (FileWriter fileWriter = new FileWriter(jsonFileName)) {
             if (element == null) {
-                throw new NullPointerException("ELEMENT TO PARSE IS NULL");
+                throw new MyException("ELEMENT TO PARSE IS NULL", ExceptionCode.GSON);
             }
             gson.toJson(element, fileWriter);
         } catch (Exception e) {
@@ -52,6 +53,4 @@ public abstract class JsonConverter<T> {
             throw new MyException(e.getMessage(), ExceptionCode.GSON);
         }
     }
-
-
 }

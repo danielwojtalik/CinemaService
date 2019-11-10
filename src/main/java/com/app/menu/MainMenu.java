@@ -1,11 +1,7 @@
 package com.app.menu;
 
 import com.app.exceptions.MyException;
-import com.app.model.Customer;
-import com.app.model.LoyaltyCard;
-import com.app.model.Movie;
-import com.app.model.MovieType;
-import com.app.service.TicketConfiguration;
+import com.app.model.*;
 import com.app.service.cinema_service.*;
 import com.app.service.email_service.EmailService;
 import com.app.service.utils.UserDataService;
@@ -20,11 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static com.app.main.ApplicationConstants.MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD;
-import static j2html.TagCreator.body;
-import static j2html.TagCreator.h1;
 
 @Log4j
 @RequiredArgsConstructor
@@ -62,6 +55,7 @@ public final class MainMenu {
             } catch (MyException e) {
                 System.err.println(e.getExceptionInfo().getDescription());
                 System.err.println(e.getExceptionInfo().getExceptionCode());
+                System.err.println(e.getMessage());
             }
 
         }
@@ -73,7 +67,7 @@ public final class MainMenu {
         System.out.println("2. Add new movie");
         System.out.println("3. Manage customers");
         System.out.println("4. Manage movies");
-        System.out.println("5. Buy tickets");
+        System.out.println("5. Sell ticket");
         System.out.println("6. Transactions history");
         System.out.println("7. Statistics");
         System.out.println("8. Close application");
@@ -130,13 +124,13 @@ public final class MainMenu {
         // sell ticket
         LoyaltyCard loyaltyCard = customer.getLoyaltyCardId() != null ? loyaltyCardService
                 .findLoyaltyCardById(customer.getLoyaltyCardId()) : null;
-        TicketConfiguration ticketConfiguration = new TicketConfiguration();
-        ticketConfiguration.setCustomer(customer);
-        ticketConfiguration.setMovie(movie);
-        ticketConfiguration.setStartTime(startTime);
-        ticketConfiguration.setPriceWithDiscount(loyaltyCard != null ? (loyaltyCard.getDiscount().add(BigDecimal.ONE))
+        SalesStand salesStandToAdd = new SalesStand();
+        salesStandToAdd.setCustomerId(customer.getId());
+        salesStandToAdd.setMovieId(movie.getId());
+        salesStandToAdd.setStartTime(startTime);
+        salesStandToAdd.setPriceWithDiscount(loyaltyCard != null ? (loyaltyCard.getDiscount().add(BigDecimal.ONE))
                 .multiply(movie.getPrice()) : movie.getPrice());
-        salesStandsService.sellTicket(ticketConfiguration);
+        salesStandsService.sellTicket(salesStandToAdd);
 
         // update movies amount bought by customer in loyalty card if exists
         if (customer.getLoyaltyCardId() != null) {
@@ -162,7 +156,7 @@ public final class MainMenu {
         }
 
         // send email
-        String message = salesStandsService.prepareConfirmationMessage(ticketConfiguration);
+        String message = salesStandsService.prepareConfirmationMessage(salesStandToAdd);
         EmailService.sendAsHtml(customer.getEmail(), "Confirmation", message);
     }
 
@@ -249,38 +243,7 @@ public final class MainMenu {
     }
 
     private void option7() {
-
-        System.out.println("CLIENT WHO SPENT MOST MONEY FOR PARTICULAR MOVIE TYPE (GENRE)...");
-        Map<MovieType, Customer> bestCustomersInMovieTypes = statisticsService.retrieveBestCustomerForCategory();
-        bestCustomersInMovieTypes
-                .forEach((key, value) -> System.out.println(key.toString() + ":\n" + value.getName() + " "
-                        + value.getSurname() + " with id  = " + value.getId()));
-
-        System.out.println("\nHOW MANY TICKETS HAS BEEN SOLD FOR EVERY MOVIE TYPE IN TIME SLOT...");
-        LocalDate startDate = UserDataService.getDate("Write start date:");
-        LocalDate finishDate = UserDataService.getDate("Write finish date:");
-
-        Map<MovieType, Long> ticketSoldInCategory = statisticsService.
-                retrieveAllTicketSalesInEachCategoryInTimeRange(startDate, finishDate);
-
-        ticketSoldInCategory
-                .forEach((key, value) -> System.out.println(key.toString() + ": " + value));
-
-        System.out.println("\nHOW MANY TIMES CUSTOMER BOUGHT TICKET FOR EACH MOVIE");
-        Map<Customer, Map<Movie, Long>> customersWithAmountOfParticularMovie = statisticsService.retrieveNumberOfEachMoviesForClient();
-        customersWithAmountOfParticularMovie.forEach((key, value) -> System.out.println("Customer " + key.getName()
-                + " " + key.getSurname() + " with ID equal " + key.getId() + " has bought ticket for movies: \n"
-                + value.entrySet().stream().map(entry -> entry.getKey().getTitle() + " " + entry.getValue() + " times")
-                .collect(Collectors.joining("; "))));
-
-        System.out.println("\n TOTAL PRICE FOR ALL TICKETS IS..." + statisticsService.retrieveTotalTicketPriceSoldInCinema());
-
-
-        String html = body(
-                h1("Hello, World!")
-        ).render();
-
-        System.out.println(html);
+        new StatisticsMenu(statisticsService).manageStatistics();
     }
 
     private void option8() {

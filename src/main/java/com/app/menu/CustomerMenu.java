@@ -66,7 +66,7 @@ public class CustomerMenu {
         Integer age = UserDataService.getIntWithValidator("Write the new age of customer ", a -> a > 10);
         String emailAddress = UserDataService.getStringWithValidator("Write the new email address of customer",
                 UserDataService::isMailAddress);
-        Integer loyaltyCard = UserDataService.getIntWithValidator("Write new loyalty card of customer", lc -> lc > 0);
+        Integer loyaltyCard = UserDataService.getIntWithValidator("Write new loyalty card of customer", lc -> lc >= 0);
 
         return Customer.builder()
                 .id(id)

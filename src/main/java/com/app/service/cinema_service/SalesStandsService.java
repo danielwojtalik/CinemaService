@@ -6,11 +6,10 @@ import com.app.model.Customer;
 import com.app.model.LoyaltyCard;
 import com.app.model.Movie;
 import com.app.model.SalesStand;
-import com.app.repository.CustomerRepository;
-import com.app.repository.LoyaltyCardRepository;
-import com.app.repository.MovieRepository;
-import com.app.repository.SalesStandsRepository;
-import com.app.service.TicketConfiguration;
+import com.app.repository.impl.CustomerRepository;
+import com.app.repository.impl.LoyaltyCardRepository;
+import com.app.repository.impl.MovieRepository;
+import com.app.repository.impl.SalesStandsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
@@ -41,6 +40,7 @@ public class SalesStandsService {
     public List<SalesStand> findAllSaleStands() {
         return salesStandsRepository.findAll();
     }
+
     public Map<Integer, LocalTime> getAvailableTime() {
         LocalTime lastAvailableTime = LocalTime.now().withHour(22).withMinute(30).withSecond(0);
         LocalTime currentTime = LocalTime.now();
@@ -108,20 +108,8 @@ public class SalesStandsService {
         }
     }
 
-    public void sellTicket(TicketConfiguration ticketConfiguration) {
-        if (ticketConfiguration.getCustomer() == null) {
-            throw new MyException("CUSTOMER IS NULL", ExceptionCode.SALES_STAND_SERVICE);
-        }
-        if (ticketConfiguration.getMovie() == null) {
-            throw new MyException("MOVIE IS NULL", ExceptionCode.SALES_STAND_SERVICE);
-        }
-        if (ticketConfiguration.getStartTime() == null) {
-            throw new MyException("START TIME IS NULL", ExceptionCode.SALES_STAND_SERVICE);
-        }
-        if (ticketConfiguration.getPriceWithDiscount() == null) {
-            throw new MyException("PRICE WITH DISCOUNT IS NULL", ExceptionCode.SALES_STAND_SERVICE);
-        }
-        salesStandsRepository.addSaleStand(ticketConfiguration);
+    public void sellTicket(SalesStand salesStand) {
+        salesStandsRepository.addSaleStand(salesStand);
         log.info("TICKET SUCCESSFULLY SELL");
     }
 
@@ -132,12 +120,12 @@ public class SalesStandsService {
         return salesStandsRepository.getTicketQuantityBoughtByCustomer(customer);
     }
 
-    public String prepareConfirmationMessage(TicketConfiguration ticketConfiguration) {
+    public String prepareConfirmationMessage(SalesStand salesStand) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
-        final Customer customer = ticketConfiguration.getCustomer();
-        final Movie movie = ticketConfiguration.getMovie();
-        final LocalTime startTime = ticketConfiguration.getStartTime();
-        final BigDecimal finalPrice = ticketConfiguration.getPriceWithDiscount();
+        final Customer customer = customerRepository.findById(salesStand.getCustomerId()).orElse(null);
+        final Movie movie = movieRepository.findById(salesStand.getMovieId()).orElse(null);
+        final LocalTime startTime = salesStand.getStartTime();
+        final BigDecimal finalPrice = salesStand.getPriceWithDiscount();
         String messageContent = "Hello, %s %s!\nYou have already successfully bought ticket for movie: %s.\n" +
                 "The movie starts today at: %s.\nThe ticket price is equal: %s zł.";
         return String.format(messageContent, customer.getName(), customer.getSurname(), movie.getTitle(),

@@ -38,7 +38,7 @@ public final class UserDataService {
         try {
             return Integer.parseInt(sc.nextLine());
         } catch (Exception e) {
-            throw new MyException("WRONG INT INPUT", ExceptionCode.WRONG_INPUT);
+            throw new MyException("WRONG INT INPUT", ExceptionCode.USER_DATA_SERVICE);
         }
     }
 
@@ -47,8 +47,8 @@ public final class UserDataService {
         int value;
         try {
             value = Integer.parseInt(sc.nextLine());
-        } catch (Exception e) {
-            throw new MyException("WRONG INT INPUT", ExceptionCode.WRONG_INPUT);
+        } catch (NumberFormatException e) {
+            throw new MyException("WRONG INT INPUT", ExceptionCode.USER_DATA_SERVICE);
         }
         if (validator != null && validator.test(value)) {
             return value;
@@ -64,7 +64,7 @@ public final class UserDataService {
         try {
             value = new BigDecimal(sc.nextLine());
         } catch (Exception e) {
-            throw new MyException("WRONG BIGDECIMAL INPUT", ExceptionCode.WRONG_INPUT);
+            throw new MyException("WRONG BIGDECIMAL INPUT", ExceptionCode.USER_DATA_SERVICE);
         }
         if (validator.test(value)) {
             return value;
@@ -75,7 +75,7 @@ public final class UserDataService {
     }
 
     public static boolean isMailAddress(String adress) {
-        String addressRegex = "[a-z]+\\.[a-z]+@([a-z0-9]+\\.)+[a-z]+";
+        String addressRegex = "[a-z]+\\.?[a-z]+@([a-z0-9]+\\.)+[a-z]+";
         return adress.matches(addressRegex);
 
     }
@@ -89,7 +89,7 @@ public final class UserDataService {
         try {
             localTime = LocalDate.parse(dateFromUser, formatter);
         } catch (Exception e) {
-            throw new MyException("CAN NOT GET DATE FROM USER", ExceptionCode.WRONG_INPUT);
+            throw new MyException("CAN NOT GET DATE FROM USER", ExceptionCode.USER_DATA_SERVICE);
         }
         return localTime;
     }

@@ -4,7 +4,7 @@ import com.app.exceptions.ExceptionCode;
 import com.app.exceptions.MyException;
 import com.app.model.Customer;
 import com.app.model.LoyaltyCard;
-import com.app.repository.LoyaltyCardRepository;
+import com.app.repository.impl.LoyaltyCardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 

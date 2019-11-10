@@ -4,7 +4,7 @@ import com.app.exceptions.ExceptionCode;
 import com.app.exceptions.MyException;
 import com.app.menu.criteria.SearchCriteria;
 import com.app.model.Customer;
-import com.app.repository.CustomerRepository;
+import com.app.repository.impl.CustomerRepository;
 import com.app.service.utils.UserDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -86,6 +86,9 @@ public class CustomerService {
     // TODO: 11.07.2019 Sprawdz czy istnieje id karty lojalnosciowej takie na jakie chcesz zmienic i jezeli nie to pozostaw null - loyalty card repository required
     public void update(Customer newCustomer) {
         try {
+            if (newCustomer.getLoyaltyCardId() == 0) {
+                newCustomer.setLoyaltyCardId(null);
+            }
             customerRepository.update(newCustomer);
         } catch (UnableToExecuteStatementException e) {
             newCustomer.setLoyaltyCardId(null);

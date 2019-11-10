@@ -17,6 +17,6 @@ import java.time.LocalTime;
 public class SalesStand {
     private Integer customerId;
     private Integer movieId;
-    private LocalTime localTime;
+    private LocalTime startTime;
     private BigDecimal priceWithDiscount;
 }
