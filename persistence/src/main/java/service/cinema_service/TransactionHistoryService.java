@@ -1,12 +1,12 @@
 package service.cinema_service;
 
-import com.app.exceptions.ExceptionCode;
-import com.app.exceptions.MyException;
-import com.app.model.Customer;
-import com.app.model.Movie;
-import repository.impl.MovieRepository;
+import exceptions.ExceptionCode;
+import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import model.Customer;
+import model.Movie;
+import repository.impl.MovieRepository;
 
 import java.util.List;
 

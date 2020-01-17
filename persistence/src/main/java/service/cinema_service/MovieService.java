@@ -1,13 +1,15 @@
 package service.cinema_service;
 
-import com.app.converters.MovieConverter;
-import com.app.exceptions.ExceptionCode;
-import com.app.exceptions.MyException;
-import com.app.model.Customer;
-import com.app.model.Movie;
-import repository.impl.MovieRepository;
+
+import converters.MovieConverter;
+import exceptions.ExceptionCode;
+import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import model.Customer;
+import model.Movie;
+import repository.impl.MovieRepository;
+import service.ApplicationConstants;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

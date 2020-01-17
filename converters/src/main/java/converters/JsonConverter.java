@@ -1,8 +1,8 @@
 package converters;
 
-import com.app.exceptions.ExceptionCode;
-import com.app.exceptions.MyException;
 import com.google.gson.*;
+import exceptions.ExceptionCode;
+import exceptions.MyException;
 import lombok.extern.log4j.Log4j;
 
 import java.io.FileReader;

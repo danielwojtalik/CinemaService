@@ -1,6 +1,7 @@
 package service.email_service;
 
-import com.app.model.Movie;
+
+import model.Movie;
 
 import java.util.List;
 

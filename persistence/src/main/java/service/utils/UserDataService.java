@@ -1,7 +1,8 @@
 package service.utils;
 
-import com.app.exceptions.ExceptionCode;
-import com.app.exceptions.MyException;
+
+import exceptions.ExceptionCode;
+import exceptions.MyException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

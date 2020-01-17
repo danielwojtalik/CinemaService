@@ -1,11 +1,11 @@
 package menu;
 
-import com.app.model.Customer;
-import com.app.model.Movie;
-import com.app.model.MovieType;
+import lombok.RequiredArgsConstructor;
+import model.Customer;
+import model.Movie;
+import model.MovieType;
 import service.cinema_service.StatisticsService;
 import service.utils.UserDataService;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Map;

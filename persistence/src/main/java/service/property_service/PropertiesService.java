@@ -1,7 +1,7 @@
 package service.property_service;
 
-import com.app.exceptions.ExceptionCode;
-import com.app.exceptions.MyException;
+import exceptions.ExceptionCode;
+import exceptions.MyException;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

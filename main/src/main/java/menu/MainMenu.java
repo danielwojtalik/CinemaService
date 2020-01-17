@@ -1,11 +1,12 @@
 package menu;
 
-import com.app.exceptions.MyException;
+import exceptions.MyException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import model.*;
 import service.cinema_service.*;
 import service.email_service.EmailService;
 import service.utils.UserDataService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.app.main.ApplicationConstants.MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD;
+import static service.ApplicationConstants.MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD;
+
 
 @Log4j
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package menu.criteria;
+package service.criteria;
 
 public enum SearchCriteria {
     BY_NAME("Search by name"),

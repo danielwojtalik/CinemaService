@@ -1,7 +1,8 @@
 package service.email_service;
 
-import com.app.exceptions.ExceptionCode;
-import com.app.exceptions.MyException;
+
+import exceptions.ExceptionCode;
+import exceptions.MyException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.*;

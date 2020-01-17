@@ -1,11 +1,11 @@
 package menu;
 
-import com.app.exceptions.MyException;
-import com.app.model.Customer;
-import service.cinema_service.CustomerService;
-import service.utils.UserDataService;
+import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import model.Customer;
+import service.cinema_service.CustomerService;
+import service.utils.UserDataService;
 
 import java.util.List;
 import java.util.function.Predicate;

@@ -1,8 +1,8 @@
 package service.utils;
 
-import com.app.model.Customer;
-import com.app.model.MovieType;
 import j2html.tags.ContainerTag;
+import model.Customer;
+import model.MovieType;
 
 import java.util.Map;
 

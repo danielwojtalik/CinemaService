@@ -1,12 +1,12 @@
 package menu;
 
-import com.app.exceptions.MyException;
-import menu.criteria.SearchCriteria;
-import com.app.model.Movie;
-import service.cinema_service.MovieService;
-import service.utils.UserDataService;
+import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import model.Movie;
+import service.cinema_service.MovieService;
+import service.criteria.SearchCriteria;
+import service.utils.UserDataService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

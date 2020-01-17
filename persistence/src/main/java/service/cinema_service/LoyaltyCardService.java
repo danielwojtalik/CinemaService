@@ -1,12 +1,12 @@
 package service.cinema_service;
 
-import com.app.exceptions.ExceptionCode;
-import com.app.exceptions.MyException;
-import com.app.model.Customer;
-import com.app.model.LoyaltyCard;
-import repository.impl.LoyaltyCardRepository;
+import exceptions.ExceptionCode;
+import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import model.Customer;
+import model.LoyaltyCard;
+import repository.impl.LoyaltyCardRepository;
 
 @Log4j
 @RequiredArgsConstructor

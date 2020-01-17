@@ -1,18 +1,10 @@
 package com.app;
 
 
-import com.app.model.Customer;
-import com.app.model.Movie;
-import com.app.model.MovieType;
-import com.app.model.SalesStand;
-import com.app.repository.impl.CustomerRepository;
-import com.app.repository.impl.LoyaltyCardRepository;
-import com.app.repository.impl.MovieRepository;
-import com.app.repository.impl.SalesStandsRepository;
-import com.app.service.cinema_service.CustomerService;
-import com.app.service.cinema_service.MovieService;
-import com.app.service.cinema_service.SalesStandsService;
-import com.app.service.cinema_service.StatisticsService;
+import model.Customer;
+import model.Movie;
+import model.MovieType;
+import model.SalesStand;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +17,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import repository.impl.CustomerRepository;
+import repository.impl.LoyaltyCardRepository;
+import repository.impl.MovieRepository;
+import repository.impl.SalesStandsRepository;
+import service.cinema_service.CustomerService;
+import service.cinema_service.MovieService;
+import service.cinema_service.SalesStandsService;
+import service.cinema_service.StatisticsService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -4,10 +4,10 @@ import exceptions.ExceptionCode;
 import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import menu.criteria.SearchCriteria;
 import model.Customer;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import repository.impl.CustomerRepository;
+import service.criteria.SearchCriteria;
 import service.utils.UserDataService;
 
 import java.util.List;
