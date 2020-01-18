@@ -1,4 +1,4 @@
-package com.app;
+package cinema_service;
 
 
 import model.Customer;
@@ -21,10 +21,6 @@ import repository.impl.CustomerRepository;
 import repository.impl.LoyaltyCardRepository;
 import repository.impl.MovieRepository;
 import repository.impl.SalesStandsRepository;
-import service.cinema_service.CustomerService;
-import service.cinema_service.MovieService;
-import service.cinema_service.SalesStandsService;
-import service.cinema_service.StatisticsService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -211,3 +207,11 @@ public class StatisticsServiceTest {
         Assertions.assertEquals(totalPriceForTickets, new BigDecimal("250"));
     }
 }
+
+
+
+
+
+
+
+

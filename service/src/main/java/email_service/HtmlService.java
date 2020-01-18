@@ -1,4 +1,4 @@
-package service.email_service;
+package email_service;
 
 
 import model.Movie;

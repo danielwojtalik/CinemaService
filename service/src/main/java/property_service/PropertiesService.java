@@ -1,4 +1,4 @@
-package service.property_service;
+package property_service;
 
 import exceptions.ExceptionCode;
 import exceptions.MyException;

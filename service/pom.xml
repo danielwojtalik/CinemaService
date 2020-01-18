@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>persistence</artifactId>
+    <artifactId>service</artifactId>
 
     <dependencies>
         <dependency>
@@ -20,16 +20,11 @@
         </dependency>
         <dependency>
             <groupId>com.app</groupId>
-            <artifactId>exceptions</artifactId>
+            <artifactId>persistence</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.app</groupId>
-            <artifactId>converters</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+
     </dependencies>
 
 

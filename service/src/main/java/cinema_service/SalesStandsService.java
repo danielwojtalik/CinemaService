@@ -1,4 +1,4 @@
-package service.cinema_service;
+package cinema_service;
 
 import exceptions.ExceptionCode;
 import exceptions.MyException;
@@ -124,7 +124,7 @@ public class SalesStandsService {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         final Customer customer = customerRepository.findById(salesStand.getCustomerId()).orElse(null);
         final Movie movie = movieRepository.findById(salesStand.getMovieId()).orElse(null);
-        final LocalTime startTime = salesStand.getStartTime();
+        final LocalTime startTime = salesStand.getStartDateTime();
         final BigDecimal finalPrice = salesStand.getPriceWithDiscount();
         String messageContent = "Hello, %s %s!\nYou have already successfully bought ticket for movie: %s.\n" +
                 "The movie starts today at: %s.\nThe ticket price is equal: %s zł.";

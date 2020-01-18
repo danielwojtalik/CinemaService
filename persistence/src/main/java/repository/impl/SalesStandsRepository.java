@@ -10,7 +10,6 @@ import model.SalesStand;
 import repository.AbstractCrudRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Log4j
@@ -62,22 +61,24 @@ public class SalesStandsRepository extends AbstractCrudRepository<SalesStand, In
         if (salesStand.getMovieId() == null) {
             throw new MyException("MOVIE IS NULL", ExceptionCode.REPOSITORY);
         }
-        if (salesStand.getStartTime() == null) {
+        if (salesStand.getStartDateTime() == null) {
             throw new MyException("START TIME IS NULL", ExceptionCode.REPOSITORY);
         }
         if (salesStand.getPriceWithDiscount() == null) {
             throw new MyException("DISCOUNT IS NULL", ExceptionCode.REPOSITORY);
         }
 
-        LocalDateTime startTimeWithDate = LocalDateTime.now().with(salesStand.getStartTime());
-        jdbi.useTransaction(handle -> handle.createUpdate("insert into sales_stands (customer_id, movie_id, " +
-                "start_date_time, price_with_discount) values (:customer_id, :movie_id, :start_date_time, :price_with_discount)")
-                .bind("customer_id", salesStand.getCustomerId())
-                .bind("movie_id", salesStand.getMovieId())
-                .bind("start_date_time", startTimeWithDate)
-                .bind("price_with_discount", salesStand.getPriceWithDiscount())
-                .execute()
-        );
+        super.add(salesStand);
+
+//        LocalDateTime startTimeWithDate = LocalDateTime.now().with(salesStand.getStartTime());
+//        jdbi.useTransaction(handle -> handle.createUpdate("insert into sales_stands (customer_id, movie_id, " +
+//                "start_date_time, price_with_discount) values (:customer_id, :movie_id, :start_date_time, :price_with_discount)")
+//                .bind("customer_id", salesStand.getCustomerId())
+//                .bind("movie_id", salesStand.getMovieId())
+//                .bind("start_date_time", startTimeWithDate)
+//                .bind("price_with_discount", salesStand.getPriceWithDiscount())
+//                .execute()
+//        );
     }
 
     public List<SalesStand> findByStartDateTime() {

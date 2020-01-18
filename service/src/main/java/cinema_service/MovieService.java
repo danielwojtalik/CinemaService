@@ -1,4 +1,4 @@
-package service.cinema_service;
+package cinema_service;
 
 
 import converters.MovieConverter;
@@ -6,10 +6,10 @@ import exceptions.ExceptionCode;
 import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import model.Boundary;
 import model.Customer;
 import model.Movie;
 import repository.impl.MovieRepository;
-import service.ApplicationConstants;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class MovieService {
+
+    private static final String PATH_TO_RESOURCES_FOLDER = "D:/workspace/JavaWorkspace/2. PORTFOLIO/CinemaTicketsJDBI/main/src/main/resources/";
 
     private final MovieRepository movieRepository;
     private final SalesStandsService salesStandsService;
@@ -80,7 +82,7 @@ public class MovieService {
         if (title == null) {
             throw new MyException("MOVIE TITLE IS NULL", ExceptionCode.MOVIE_SERVICE);
         }
-        String fullPathToFile = new StringBuilder(ApplicationConstants.PATH_TO_RESOURCES_FOLDER)
+        String fullPathToFile = new StringBuilder(PATH_TO_RESOURCES_FOLDER)
                 .append(title)
                 .append(".json").toString();
         MovieConverter movieConverter = new MovieConverter(fullPathToFile);
@@ -97,10 +99,5 @@ public class MovieService {
                     .collect(Collectors.toList());
         }
         return moviesSeenByCustomer;
-    }
-
-    public enum Boundary {
-        LESS_THAN,
-        MORE_THAN
     }
 }

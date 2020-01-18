@@ -1,4 +1,4 @@
-package service.utils;
+package utils;
 
 
 import exceptions.ExceptionCode;

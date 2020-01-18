@@ -1,5 +1,3 @@
-package service;
-
 public final class ApplicationConstants {
 
     public static final String PATH_TO_RESOURCES_FOLDER = "src\\main\\resources\\";

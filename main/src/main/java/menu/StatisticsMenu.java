@@ -1,11 +1,11 @@
 package menu;
 
+import cinema_service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import model.Customer;
 import model.Movie;
 import model.MovieType;
-import service.cinema_service.StatisticsService;
-import service.utils.UserDataService;
+import utils.UserDataService;
 
 import java.time.LocalDate;
 import java.util.Map;

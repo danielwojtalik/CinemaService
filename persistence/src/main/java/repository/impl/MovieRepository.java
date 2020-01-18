@@ -2,9 +2,9 @@ package repository.impl;
 
 
 import lombok.extern.log4j.Log4j;
+import model.Boundary;
 import model.Movie;
 import repository.AbstractCrudRepository;
-import service.cinema_service.MovieService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -94,25 +94,25 @@ public class MovieRepository extends AbstractCrudRepository<Movie, Integer> {
                 .list());
     }
 
-    public List<Movie> findByPrice(BigDecimal price, MovieService.Boundary boundary) {
+    public List<Movie> findByPrice(BigDecimal price, Boundary boundary) {
         String sql = "select * from movies where price %s :price";
-        return jdbi.withHandle(handle -> handle.createQuery(String.format(sql, boundary == MovieService.Boundary.LESS_THAN ? "<" : ">"))
+        return jdbi.withHandle(handle -> handle.createQuery(String.format(sql, boundary == Boundary.LESS_THAN ? "<" : ">"))
                 .bind("price", price)
                 .mapToBean(Movie.class)
                 .list());
     }
 
-    public List<Movie> findByDuration(int duration, MovieService.Boundary boundary) {
+    public List<Movie> findByDuration(int duration, Boundary boundary) {
         String sql = "select * from movies where duration %s :duration";
-        return jdbi.withHandle(handle -> handle.createQuery(String.format(sql, boundary == MovieService.Boundary.LESS_THAN ? "<" : ">"))
+        return jdbi.withHandle(handle -> handle.createQuery(String.format(sql, boundary == Boundary.LESS_THAN ? "<" : ">"))
                 .bind("duration", duration)
                 .mapToBean(Movie.class)
                 .list());
     }
 
-    public List<Movie> findByReleaseDate(LocalDate releaseDate, MovieService.Boundary boundary) {
+    public List<Movie> findByReleaseDate(LocalDate releaseDate, Boundary boundary) {
         String sql = "select * from movies where release_date %s :release_date";
-        return jdbi.withHandle(handle -> handle.createQuery(String.format(sql,boundary == MovieService.Boundary.LESS_THAN ? "<" : ">"))
+        return jdbi.withHandle(handle -> handle.createQuery(String.format(sql,boundary == Boundary.LESS_THAN ? "<" : ">"))
                 .bind("release_date", releaseDate)
                 .mapToBean(Movie.class)
                 .list());

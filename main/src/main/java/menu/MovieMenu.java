@@ -1,12 +1,13 @@
 package menu;
 
+import cinema_service.MovieService;
+import criteria.SearchCriteria;
 import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import model.Boundary;
 import model.Movie;
-import service.cinema_service.MovieService;
-import service.criteria.SearchCriteria;
-import service.utils.UserDataService;
+import utils.UserDataService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -109,7 +110,7 @@ public class MovieMenu {
 
     private List<Movie> getSearchResult() {
         SearchCriteria searchCriteria = getSearchCriterion();
-        MovieService.Boundary boundary;
+        Boundary boundary;
         if (searchCriteria == SearchCriteria.BY_TITLE) {
             String title = UserDataService.getString("Write title of movie which you are looking for:...");
             return movieService.findByTitle(title);
@@ -137,13 +138,13 @@ public class MovieMenu {
         return null;
     }
 
-    private MovieService.Boundary getBoundaryOption() {
-        MovieService.Boundary boundary;
+    private Boundary getBoundaryOption() {
+        Boundary boundary;
         int boundaryOption = UserDataService.getInt("If you need less than boundary press 1, else press any key...");
         if (boundaryOption == 1) {
-            boundary = MovieService.Boundary.LESS_THAN;
+            boundary = Boundary.LESS_THAN;
         } else {
-            boundary = MovieService.Boundary.MORE_THAN;
+            boundary = Boundary.MORE_THAN;
         }
         return boundary;
     }

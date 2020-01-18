@@ -7,7 +7,7 @@ import repository.impl.CustomerRepository;
 import repository.impl.LoyaltyCardRepository;
 import repository.impl.MovieRepository;
 import repository.impl.SalesStandsRepository;
-import service.cinema_service.*;
+import cinema_service.*;
 
 public class Main {
 

@@ -3,6 +3,7 @@ package repository;
 import com.google.common.base.CaseFormat;
 import exceptions.ExceptionCode;
 import exceptions.MyException;
+import lombok.extern.slf4j.Slf4j;
 import org.atteo.evo.inflector.English;
 import org.jdbi.v3.core.Jdbi;
 import repository.connection.DbConnection;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T, ID> {
 
     protected final Jdbi jdbi = DbConnection.getInstance().getJdbi();
@@ -40,7 +42,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
         }
 
         return jdbi.withHandle(handle -> handle
-                .createQuery("select * from " + getTableName() + "where id =:id")
+                .createQuery("select * from " + getTableName() + " where id =:id")
                 .bind("id", id)
                 .mapToBean(entityType)
                 .findFirst()
@@ -88,7 +90,10 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
 
     private String getTableName() {
         String tableName = entityType.getSimpleName();
-        return English.plural(tableName);
+        tableName = English.plural(tableName);
+        tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, tableName);
+        log.info("Table name after formatting: " + tableName);
+        return tableName;
     }
 
     private String getParamsForAdd(T t) {
@@ -114,7 +119,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                         if (field.get(t) == null) {
                             return NULL;
                         }
-                        if (field.getType().equals(String.class)) {
+                        if (!Number.class.isAssignableFrom(field.getType())) {
                             return "'" + field.get(t).toString() + "'";
                         }
                         return field.get(t).toString();

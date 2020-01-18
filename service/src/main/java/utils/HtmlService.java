@@ -1,4 +1,4 @@
-package service.utils;
+package utils;
 
 import j2html.tags.ContainerTag;
 import model.Customer;

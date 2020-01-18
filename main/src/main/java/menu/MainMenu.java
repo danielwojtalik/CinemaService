@@ -1,12 +1,12 @@
 package menu;
 
+import cinema_service.*;
+import email_service.EmailService;
 import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.*;
-import service.cinema_service.*;
-import service.email_service.EmailService;
-import service.utils.UserDataService;
+import utils.UserDataService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,13 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static service.ApplicationConstants.MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD;
-
 
 @Log4j
 @RequiredArgsConstructor
 public final class MainMenu {
 
+    private static final Integer MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD = 2;
     private static final String NAME = "Write the name of customer:";
     private static final String SURNAME = "Write the surname of customer:";
     private static final String AGE = "Write the age of the customer";
@@ -94,8 +93,20 @@ public final class MainMenu {
         movieService.addMovie(movie);
     }
 
-    private Movie retrieveMovie() {
+    private Movie retrieveMovie()  {
         String movieTitle = UserDataService.getString("Please write movie title");
+//        FileOutputStream fos = null;
+//        try {
+//            fos = new FileOutputStream("myfile.txt", true);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        PrintWriter pw = new PrintWriter(fos);
+//
+//        pw.println("Hello Gienek");
+//        pw.close();
+//        System.out.println("File was written");
+//        return null;
         return movieService.retrieveMovieFromTitle(movieTitle);
     }
 
@@ -128,7 +139,7 @@ public final class MainMenu {
         SalesStand salesStandToAdd = new SalesStand();
         salesStandToAdd.setCustomerId(customer.getId());
         salesStandToAdd.setMovieId(movie.getId());
-        salesStandToAdd.setStartTime(startTime);
+        salesStandToAdd.setStartDateTime(startTime);
         salesStandToAdd.setPriceWithDiscount(loyaltyCard != null ? (loyaltyCard.getDiscount().add(BigDecimal.ONE))
                 .multiply(movie.getPrice()) : movie.getPrice());
         salesStandsService.sellTicket(salesStandToAdd);
