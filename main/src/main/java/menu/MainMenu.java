@@ -10,7 +10,7 @@ import utils.UserDataService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,9 @@ public final class MainMenu {
                 System.err.println(e.getExceptionInfo().getDescription());
                 System.err.println(e.getExceptionInfo().getExceptionCode());
                 System.err.println(e.getMessage());
+            } catch (Exception e) {
+                log.warn("Outside exception");
+                e.printStackTrace();
             }
 
         }
@@ -95,18 +98,6 @@ public final class MainMenu {
 
     private Movie retrieveMovie()  {
         String movieTitle = UserDataService.getString("Please write movie title");
-//        FileOutputStream fos = null;
-//        try {
-//            fos = new FileOutputStream("myfile.txt", true);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        PrintWriter pw = new PrintWriter(fos);
-//
-//        pw.println("Hello Gienek");
-//        pw.close();
-//        System.out.println("File was written");
-//        return null;
         return movieService.retrieveMovieFromTitle(movieTitle);
     }
 
@@ -130,8 +121,8 @@ public final class MainMenu {
         Movie movie = movieService.findMovieById(id);
 
         // choose start time of the movie
-        Map<Integer, LocalTime> availableTime = salesStandsService.getAvailableTime();
-        LocalTime startTime = retrieveMovieStartTimeFromUser(availableTime);
+        Map<Integer, LocalDateTime> availableTime = salesStandsService.getAvailableTime();
+        LocalDateTime startTime = retrieveMovieStartTimeFromUser(availableTime);
 
         // sell ticket
         LoyaltyCard loyaltyCard = customer.getLoyaltyCardId() != null ? loyaltyCardService
@@ -169,7 +160,7 @@ public final class MainMenu {
 
         // send email
         String message = salesStandsService.prepareConfirmationMessage(salesStandToAdd);
-        EmailService.sendAsHtml(customer.getEmail(), "Confirmation", message);
+        EmailService.sentEmail(customer.getEmail(), "Confirmation", message);
     }
 
     private Customer getCustomerFromDB() {
@@ -179,7 +170,7 @@ public final class MainMenu {
         return customerService.findByNameSurnameEmail(name, surname, email);
     }
 
-    public LocalTime retrieveMovieStartTimeFromUser(Map<Integer, LocalTime> availableHours) {
+    public LocalDateTime retrieveMovieStartTimeFromUser(Map<Integer, LocalDateTime> availableHours) {
         DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
         availableHours.forEach((k, v) -> System.out.println("option: (" + k + ") ---> " + timeFormat.format(v)));
         int choseOption = UserDataService.getIntWithValidator("Choose time for start movie",
@@ -200,7 +191,7 @@ public final class MainMenu {
         showMovieFromHistory(moviesAfterFilter);
         //send email
         String transactionHistory = transactionHistoryService.prepareContentOfTransactionHistory(moviesAfterFilter, customer);
-        EmailService.sendAsHtml(customer.getEmail(), "Transaction history", transactionHistory);
+        EmailService.sentEmail(customer.getEmail(), "Transaction history", transactionHistory);
     }
 
     private List<Predicate<Movie>> setupMoviesSearchConfiguration(Customer customer) {

@@ -2,16 +2,20 @@ package menu;
 
 import cinema_service.StatisticsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import model.Customer;
 import model.Movie;
 import model.MovieType;
+import utils.HtmlCreator;
 import utils.UserDataService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Log4j
 public class StatisticsMenu {
 
     private final StatisticsService statisticsService;
@@ -48,6 +52,9 @@ public class StatisticsMenu {
         bestCustomersInMovieTypes
                 .forEach((key, value) -> System.out.println(key.toString() + ":\n" + value.getName() + " "
                         + value.getSurname() + " with id  = " + value.getId()));
+
+        HtmlCreator.createHtmlWithBestClientInEachCategory(bestCustomersInMovieTypes);
+        log.info("Html file is created in: " + HtmlCreator.getBestClientInCategoryHtmlPath());
     }
 
     private void option2() {
@@ -57,9 +64,12 @@ public class StatisticsMenu {
 
         Map<MovieType, Long> ticketSoldInCategory = statisticsService.
                 retrieveAllTicketSalesInEachCategoryInTimeRange(startDate, finishDate);
-
         ticketSoldInCategory
                 .forEach((key, value) -> System.out.println(key.toString() + ": " + value));
+
+        HtmlCreator.createHtmlOfAllTicketSalesInEachCategoryInTimeRange(ticketSoldInCategory, startDate, finishDate);
+        log.info("Html file is created in: " + HtmlCreator.getNumberOfMoviesInEachCategory());
+
     }
 
     private void option3() {
@@ -69,9 +79,18 @@ public class StatisticsMenu {
                 + " " + key.getSurname() + " with ID equal " + key.getId() + " has bought ticket for movies: \n"
                 + value.entrySet().stream().map(entry -> entry.getKey().getTitle() + " " + entry.getValue() + " times")
                 .collect(Collectors.joining("; "))));
+
+        HtmlCreator.createHtmlWithNumberOfTicketSoldForEachCustomer(customersWithAmountOfParticularMovie);
+        log.info("Html file is created in: " + HtmlCreator.getNumberOfTicketsForEachMovieForCustomerHtmlPath());
+
     }
 
     private void option4() {
-        System.out.println("\n TOTAL PRICE FOR ALL TICKETS IS..." + statisticsService.retrieveTotalTicketPriceSoldInCinema());
+        final BigDecimal totalIncome = statisticsService.retrieveTotalTicketPriceSoldInCinema();
+        System.out.println("\n TOTAL PRICE FOR ALL TICKETS IS..." + totalIncome);
+
+        HtmlCreator.createHtmlWitTotalTicketCostInCinema(totalIncome);
+        log.info("Html file is created in: " + HtmlCreator.getTotalIncomeHtmlPath());
+
     }
 }

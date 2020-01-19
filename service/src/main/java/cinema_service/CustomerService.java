@@ -83,7 +83,6 @@ public class CustomerService {
         return customerRepository.findByAge(age);
     }
 
-    // TODO: 11.07.2019 Sprawdz czy istnieje id karty lojalnosciowej takie na jakie chcesz zmienic i jezeli nie to pozostaw null - loyalty card repository required
     public void update(Customer newCustomer) {
         try {
             if (newCustomer.getLoyaltyCardId() == 0) {

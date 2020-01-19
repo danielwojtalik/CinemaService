@@ -16,6 +16,7 @@ import repository.impl.SalesStandsRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,11 +42,11 @@ public class SalesStandsService {
         return salesStandsRepository.findAll();
     }
 
-    public Map<Integer, LocalTime> getAvailableTime() {
-        LocalTime lastAvailableTime = LocalTime.now().withHour(22).withMinute(30).withSecond(0);
+    public Map<Integer, LocalDateTime> getAvailableTime() {
+        LocalDateTime lastAvailableTime = LocalDateTime.now().withHour(22).withMinute(30).withSecond(0);
         LocalTime currentTime = LocalTime.now();
-        LocalTime startTime = LocalTime.now();
-        Map<Integer, LocalTime> availableStartTime = new LinkedHashMap<>();
+        LocalDateTime startTime = LocalDateTime.now();
+        Map<Integer, LocalDateTime> availableStartTime = new LinkedHashMap<>();
 
         if (currentTime.getMinute() > 30) {
             startTime = startTime.plusHours(1).withMinute(0).withSecond(0);
@@ -124,7 +125,7 @@ public class SalesStandsService {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         final Customer customer = customerRepository.findById(salesStand.getCustomerId()).orElse(null);
         final Movie movie = movieRepository.findById(salesStand.getMovieId()).orElse(null);
-        final LocalTime startTime = salesStand.getStartDateTime();
+        final LocalDateTime startTime = salesStand.getStartDateTime();
         final BigDecimal finalPrice = salesStand.getPriceWithDiscount();
         String messageContent = "Hello, %s %s!\nYou have already successfully bought ticket for movie: %s.\n" +
                 "The movie starts today at: %s.\nThe ticket price is equal: %s zł.";

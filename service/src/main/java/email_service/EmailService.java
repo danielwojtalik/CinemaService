@@ -16,7 +16,7 @@ public final class EmailService {
     private static final String EMAIL_ADDRESS = "dw.test.programming@gmail.com";
     private static final String EMAIL_PASSWORD = "programmingtest1";
 
-    public static void sendAsHtml( String to, String title, String html ) {
+    public static void sentEmail(String to, String title, String html) {
         try {
             log.info("Sending email to " + to);
             Session session = createSession();
@@ -24,19 +24,19 @@ public final class EmailService {
             prepareEmailMessage(mimeMessage, to, title, html);
             Transport.send(mimeMessage);
             log.info("Email has been sent successfully");
-        } catch ( Exception e ) {
-            throw new MyException("send as html exception: " + e.getMessage(), ExceptionCode.EMAIL_SERVICE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new MyException("Send email exception: " + e.getMessage(), ExceptionCode.EMAIL_SERVICE);
         }
-
     }
 
     private static void prepareEmailMessage(MimeMessage mimeMessage, String to, String title, String html) {
         try {
             mimeMessage.setContent(html, "text/html; charset=utf-8");
-            mimeMessage.setFrom( new InternetAddress(EMAIL_ADDRESS));
+            mimeMessage.setFrom(new InternetAddress(EMAIL_ADDRESS));
             mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             mimeMessage.setSubject(title);
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             throw new MyException("prepare email message exception: " + e.getMessage(), ExceptionCode.EMAIL_SERVICE);
         }
     }
