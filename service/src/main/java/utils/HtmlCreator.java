@@ -10,12 +10,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static j2html.TagCreator.*;
-import static j2html.TagCreator.h2;
 
 public final class HtmlCreator {
 
@@ -71,9 +71,13 @@ public final class HtmlCreator {
         }
     }
 
-    public static void createHtmlOfAllTicketSalesInEachCategoryInTimeRange(Map<MovieType, Long> numberOfMoviesInCategory, LocalDate startDate, LocalDate finishDate) {
+    public static void createHtmlOfAllTicketSalesInEachCategoryInTimeRange(Map<MovieType, Long> numberOfMoviesInCategory, LocalDateTime startDate, LocalDateTime finishDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm");
+        String startDateWithFormatter = startDate.format(formatter);
+        String finishDateWithFormatter = finishDate.format(formatter);
+
         String content = body(
-                h1("Tickets sold in each category in set time range (" + startDate + " - " + finishDate + "):"),
+                h1("Tickets sold in each category in set time range (" + startDateWithFormatter + " - " + finishDateWithFormatter + "):"),
                 div(attrs("#numberOfMoviesInCategory"),
                         numberOfMoviesInCategory.entrySet().stream().map(entry ->
                                 div(

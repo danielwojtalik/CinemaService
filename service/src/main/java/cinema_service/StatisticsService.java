@@ -9,7 +9,7 @@ import model.MovieType;
 import model.SalesStand;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -86,7 +86,7 @@ public class StatisticsService {
         return bestCustomerForMovieType;
     }
 
-    public Map<MovieType, Long> retrieveAllTicketSalesInEachCategoryInTimeRange(LocalDate startTime, LocalDate finishTime) {
+    public Map<MovieType, Long> retrieveAllTicketSalesInEachCategoryInTimeRange(LocalDateTime startTime, LocalDateTime finishTime) {
         List<Movie> allMovies = salesStandsService.findAllMoviesInTimeRange(startTime, finishTime);
         return allMovies.stream()
                 .map(Movie::getGenre)

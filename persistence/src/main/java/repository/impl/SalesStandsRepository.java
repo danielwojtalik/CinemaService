@@ -9,7 +9,8 @@ import model.Movie;
 import model.SalesStand;
 import repository.AbstractCrudRepository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Log4j
@@ -63,11 +64,15 @@ public class SalesStandsRepository extends AbstractCrudRepository<SalesStand, In
         );
     }
 
-    public List<Movie> findMoviesInConcreteTimeRange(LocalDate startDate, LocalDate finishDate) {
+    public List<Movie> findMoviesInConcreteTimeRange(LocalDateTime startDate, LocalDateTime finishDate) {
         if (startDate == null || finishDate == null) {
             throw new MyException("AT LEAST ONE OF DATE IS NULL", ExceptionCode.REPOSITORY);
         }
-        log.info("Start date is: " + startDate + " and finishDate is: " + finishDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm");
+        String startDateWithFormatter = startDate.format(formatter);
+        String finishDateWithFormatter = finishDate.format(formatter);
+
+        log.info("Start date is: " + startDateWithFormatter + " and finishDate is: " + finishDateWithFormatter);
         return jdbi.withHandle(handle -> handle.createQuery("select m.* from sales_stands s join movies m on " +
                 "m.id = s.movie_id where s.start_date_time between :startDate and :finishDate")
                 .bind("startDate", startDate)

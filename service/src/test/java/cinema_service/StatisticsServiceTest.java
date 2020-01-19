@@ -24,6 +24,7 @@ import repository.impl.SalesStandsRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -154,7 +155,8 @@ public class StatisticsServiceTest {
                         .collect(Collectors.toList()));
 
         // when
-        Map<MovieType, Long> numberOfMoviesInEachCategory = statisticsService.retrieveAllTicketSalesInEachCategoryInTimeRange(startDate, finishDate);
+        Map<MovieType, Long> numberOfMoviesInEachCategory = statisticsService.retrieveAllTicketSalesInEachCategoryInTimeRange(
+                startDate.atStartOfDay(), finishDate.atTime(LocalTime.MAX));
         // then
         Assertions.assertEquals(numberOfMovieInCategory, numberOfMoviesInEachCategory);
     }

@@ -15,6 +15,7 @@
         <module>converters</module>
         <module>exceptions</module>
         <module>service</module>
+        <module>utilis</module>
     </modules>
 
     <name>CinemaTicketsJDBI</name>

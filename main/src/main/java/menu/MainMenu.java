@@ -206,6 +206,7 @@ public final class MainMenu {
             Predicate<Movie> genrePredicate = (m -> m.getGenre() == getMovieType(genre));
             predicates.add(genrePredicate);
         }
+
         if (UserDataService.makeDecision("Do you need release date filter?")) {
             LocalDate fromReleaseDate = UserDataService.getDate("Write date from...");
             LocalDate toReleaseDate = UserDataService.getDate("Write date to...");

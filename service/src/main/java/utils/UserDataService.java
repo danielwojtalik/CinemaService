@@ -85,14 +85,14 @@ public final class UserDataService {
         System.out.println("Date need to be in format dd/MM/yyyy e.g. 12/05/2018");
         String dateFromUser = getString(message);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
-        LocalDate localTime;
+        LocalDate localDate;
 
         try {
-            localTime = LocalDate.parse(dateFromUser, formatter);
+            localDate = LocalDate.parse(dateFromUser, formatter);
         } catch (Exception e) {
             throw new MyException("CAN NOT GET DATE FROM USER", ExceptionCode.USER_DATA_SERVICE);
         }
-        return localTime;
+        return localDate;
     }
 
     public static void close() {

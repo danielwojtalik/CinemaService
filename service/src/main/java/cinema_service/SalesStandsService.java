@@ -150,7 +150,7 @@ public class SalesStandsService {
         return movies;
     }
 
-    public List<Movie> findAllMoviesInTimeRange(LocalDate startTime, LocalDate finishDate) {
+    public List<Movie> findAllMoviesInTimeRange(LocalDateTime startTime, LocalDateTime finishDate) {
         return salesStandsRepository.findMoviesInConcreteTimeRange(startTime, finishDate);
     }
 

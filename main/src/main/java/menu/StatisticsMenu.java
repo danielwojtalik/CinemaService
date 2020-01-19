@@ -10,7 +10,8 @@ import utils.HtmlCreator;
 import utils.UserDataService;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -59,15 +60,16 @@ public class StatisticsMenu {
 
     private void option2() {
         System.out.println("\nHOW MANY TICKETS HAS BEEN SOLD FOR EVERY MOVIE TYPE IN TIME SLOT...");
-        LocalDate startDate = UserDataService.getDate("Write start date:");
-        LocalDate finishDate = UserDataService.getDate("Write finish date:");
+        LocalDateTime startDate = UserDataService.getDate("Write start date:").atStartOfDay();
+        LocalDateTime finishDate = UserDataService.getDate("Write finish date:").atTime(LocalTime.MAX);
 
         Map<MovieType, Long> ticketSoldInCategory = statisticsService.
                 retrieveAllTicketSalesInEachCategoryInTimeRange(startDate, finishDate);
         ticketSoldInCategory
                 .forEach((key, value) -> System.out.println(key.toString() + ": " + value));
 
-        HtmlCreator.createHtmlOfAllTicketSalesInEachCategoryInTimeRange(ticketSoldInCategory, startDate, finishDate);
+        HtmlCreator.createHtmlOfAllTicketSalesInEachCategoryInTimeRange(ticketSoldInCategory,
+                startDate, finishDate);
         log.info("Html file is created in: " + HtmlCreator.getNumberOfMoviesInEachCategory());
 
     }
