@@ -20,13 +20,13 @@ import static j2html.TagCreator.h2;
 public final class HtmlCreator {
 
     private static final String bestClientInCategoryHtmlPath
-            = "D:/workspace/JavaWorkspace/2. PORTFOLIO/CinemaTicketsJDBI/service/src/main/resources/bestClientInCategory.html";
+            = "service/src/main/resources/bestClientInCategory.html";
     private static final String numberOfMoviesInEachCategory
-            = "D:/workspace/JavaWorkspace/2. PORTFOLIO/CinemaTicketsJDBI/service/src/main/resources/numberOfMoviesInEachCategory.html";
+            = "service/src/main/resources/numberOfMoviesInEachCategory.html";
     private static final String numberOfTicketsForEachMovieForCustomerHtmlPath
-            = "D:/workspace/JavaWorkspace/2. PORTFOLIO/CinemaTicketsJDBI/service/src/main/resources/numberOfTicketsForEachMovieForCustomer.html";
+            = "service/src/main/resources/numberOfTicketsForEachMovieForCustomer.html";
     private static final String totalIncomeHtmlPath
-            = "D:/workspace/JavaWorkspace/2. PORTFOLIO/CinemaTicketsJDBI/service/src/main/resources/totalIncome.html";
+            = "service/src/main/resources/totalIncome.html";
 
     public static String getBestClientInCategoryHtmlPath() {
         return bestClientInCategoryHtmlPath;

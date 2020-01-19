@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MovieService {
 
-    private static final String PATH_TO_RESOURCES_FOLDER = "D:/workspace/JavaWorkspace/2. PORTFOLIO/CinemaTicketsJDBI/main/src/main/resources/";
+    private static final String PATH_TO_RESOURCES_FOLDER = "main/src/main/resources/";
 
     private final MovieRepository movieRepository;
     private final SalesStandsService salesStandsService;
