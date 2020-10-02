@@ -4,7 +4,7 @@ package repository.impl;
 import exceptions.ExceptionCode;
 import exceptions.MyException;
 import model.LoyaltyCard;
-import repository.AbstractCrudRepository;
+import repository.generic.AbstractCrudRepository;
 
 import java.util.Comparator;
 import java.util.Optional;

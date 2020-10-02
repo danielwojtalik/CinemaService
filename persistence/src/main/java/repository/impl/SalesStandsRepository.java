@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j;
 import model.Customer;
 import model.Movie;
 import model.SalesStand;
-import repository.AbstractCrudRepository;
+import repository.generic.AbstractCrudRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

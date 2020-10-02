@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 
-
 public class SalesStand {
     private Integer customerId;
     private Integer movieId;

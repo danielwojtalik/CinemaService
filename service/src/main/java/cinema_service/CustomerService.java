@@ -27,22 +27,31 @@ public class CustomerService {
         if (customer == null) {
             throw new MyException("CUSTOMER IS NULL", ExceptionCode.CUSTOMER_SERVICE);
         }
+
         customerRepository.add(customer);
     }
 
-    public void deleteById(int id) {
-        customerRepository.deleteByID(id);
+    public Customer deleteById(int id) {
+        if (id < 1) {
+            throw new MyException("id is less than 0", ExceptionCode.CUSTOMER_SERVICE);
+        }
+
+         return customerRepository.deleteByID(id)
+                 .orElseThrow(() -> new MyException("customer with id " + id + " does not exists", ExceptionCode.CUSTOMER_SERVICE));
     }
 
-    public Customer findCustomerById(Integer id) {
-        return customerRepository.findById(id).orElseThrow(() -> new MyException("CUSTOMER DOES NOT EXIST"
-                , ExceptionCode.SALES_STAND_SERVICE));
+    public Customer findCustomerById(int id) {
+        if (id < 1) {
+            throw new MyException("id is less than 0", ExceptionCode.CUSTOMER_SERVICE);
+        }
+
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new MyException("customer with id " + id + " does not exists", ExceptionCode.CUSTOMER_SERVICE));
     }
 
     public List<Customer> findAll() {
         return customerRepository.findAll();
     }
-
 
     public SearchCriteria getSearchCriterion() {
         int option = UserDataService.getIntWithValidator(CRITERIA_OPTIONS, op -> op > 0 && op < 5);
@@ -52,6 +61,7 @@ public class CustomerService {
             case 2 -> searchCriteria = SearchCriteria.BY_SURNAME;
             case 3 -> searchCriteria = SearchCriteria.BY_AGE;
         }
+
         return searchCriteria;
     }
 
@@ -83,6 +93,7 @@ public class CustomerService {
         return customerRepository.findByAge(age);
     }
 
+    // TODO: 02.10.2020 Poznac logike tego bo jest cos ewidentnie nie tak
     public void update(Customer newCustomer) {
         try {
             if (newCustomer.getLoyaltyCardId() == 0) {
@@ -92,22 +103,23 @@ public class CustomerService {
         } catch (UnableToExecuteStatementException e) {
             newCustomer.setLoyaltyCardId(null);
             customerRepository.update(newCustomer);
-            throw new MyException("CAN NOT UPDATE USER", ExceptionCode.CUSTOMER_SERVICE);
+            throw new MyException("can not update user", ExceptionCode.CUSTOMER_SERVICE);
         }
     }
 
     public Customer findByNameSurnameEmail(String name, String surname, String email) {
         if (name == null) {
-            throw new MyException("CUSTOMER NAME IS NULL", ExceptionCode.CUSTOMER_SERVICE);
+            throw new MyException("customer name is null", ExceptionCode.CUSTOMER_SERVICE);
         }
         if (surname == null) {
-            throw new MyException("CUSTOMER SURNAME IS NULL", ExceptionCode.CUSTOMER_SERVICE);
+            throw new MyException("customer surname is null", ExceptionCode.CUSTOMER_SERVICE);
         }
         if (email == null) {
-            throw new MyException("CUSTOMER EMAIL IS NULL", ExceptionCode.CUSTOMER_SERVICE);
+            throw new MyException("customer email is null", ExceptionCode.CUSTOMER_SERVICE);
         }
+
         return customerRepository.findByNameSurnameEmail(name, surname, email).orElseThrow(
-                () -> new MyException("THERE IS NOW CUSTOMER IN DB", ExceptionCode.CUSTOMER_SERVICE));
+                () -> new MyException("customer with name " + name + ", surname " + surname + " email " + email + " does not exists", ExceptionCode.CUSTOMER_SERVICE));
     }
 }
 

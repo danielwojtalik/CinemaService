@@ -4,7 +4,7 @@ package repository.impl;
 import lombok.extern.log4j.Log4j;
 import model.Boundary;
 import model.Movie;
-import repository.AbstractCrudRepository;
+import repository.generic.AbstractCrudRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

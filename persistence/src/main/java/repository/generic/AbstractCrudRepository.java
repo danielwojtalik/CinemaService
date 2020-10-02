@@ -1,4 +1,4 @@
-package repository;
+package repository.generic;
 
 import com.google.common.base.CaseFormat;
 import exceptions.ExceptionCode;
@@ -23,7 +23,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
     private final Class<T> entityType = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     @SuppressWarnings("unchecked")
     private final Class<ID> idType = (Class<ID>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[1];
-    private static String NULL = "null";
+    private static final String NULL = "null";
 
     @Override
     public List<T> findAll() {
@@ -50,49 +50,52 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
     }
 
     @Override
-    public void add(T t) {
+    public Optional<T> add(T t) {
         final String sql = "insert into " + getTableName() + getParamsForAdd(t);
-        System.out.println(sql);
         jdbi.withHandle(handle -> handle
                 .createUpdate(sql)
                 .execute());
+
+        return Optional.ofNullable(t);
     }
 
     @Override
-    public void update(T t) {
-        if (t == null) {
-            throw new MyException("UPDATE EXCEPTION", ExceptionCode.REPOSITORY);
-        }
+    public Optional<T> update(T t) {
         final String sql = "update " + getTableName() + " set " + getParamsForUpdate(t) + " where " + getIdForUpdate(t);
         jdbi.useHandle(handle -> handle.createUpdate(sql).execute());
+
+        return Optional.ofNullable(t);
     }
 
     @Override
-    public void deleteAll() {
+    public boolean deleteAll() {
         jdbi.useHandle(handle -> handle
                 .createUpdate("delete from " + getTableName())
                 .execute()
         );
+
+        return findAll().size() == 0;
     }
 
     @Override
-    public void deleteByID(ID id) {
-        if (id == null) {
-            throw new MyException("ID TO DELETE IS NULL", ExceptionCode.REPOSITORY);
-        }
+    public Optional<T> deleteByID(ID id) {
 
-        jdbi.useHandle(handle -> handle
-                .createUpdate("delete from " + getTableName() + " where id = :id")
-                .bind("id", id)
-                .execute()
-        );
+        Optional<T> entity = findById(id);
+
+        if (entity.isPresent()) {
+            jdbi.useHandle(handle -> handle
+                    .createUpdate("delete from " + getTableName() + " where id = :id")
+                    .bind("id", id)
+                    .execute()
+            );
+        }
+        return entity;
     }
 
     private String getTableName() {
         String tableName = entityType.getSimpleName();
         tableName = English.plural(tableName);
         tableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, tableName);
-        log.info("Table name after formatting: " + tableName);
         return tableName;
     }
 

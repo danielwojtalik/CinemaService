@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static j2html.TagCreator.*;
 
+// TODO czy ta klasa na pewno powinna byc UTILS?
 public final class HtmlCreator {
 
     private static final String bestClientInCategoryHtmlPath

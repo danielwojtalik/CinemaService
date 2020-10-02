@@ -1,22 +1,22 @@
 package main;
 
 
-import menu.MainMenu;
+import cinema_service.*;
+import menu.Application;
 import org.apache.log4j.BasicConfigurator;
 import repository.impl.CustomerRepository;
 import repository.impl.LoyaltyCardRepository;
 import repository.impl.MovieRepository;
 import repository.impl.SalesStandsRepository;
-import cinema_service.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        MainMenu mainMenu = initializeApp();
-        mainMenu.runApplication();
+        Application application = initializeApp();
+        application.run();
     }
 
-    private static MainMenu initializeApp() {
+    private static Application initializeApp() {
         BasicConfigurator.configure();
         MovieRepository movieRepository = new MovieRepository();
         SalesStandsRepository salesStandsRepository = new SalesStandsRepository();
@@ -26,9 +26,9 @@ public class Main {
         SalesStandsService salesStandsService = new SalesStandsService(customerRepository, salesStandsRepository, loyaltyCardRepository, movieRepository);
         MovieService movieService = new MovieService(movieRepository, salesStandsService);
         LoyaltyCardService loyaltyCardService = new LoyaltyCardService(loyaltyCardRepository,salesStandsService);
-        TransactionHistoryService transactionHistoryService = new TransactionHistoryService(movieRepository);
         StatisticsService statisticsService = new StatisticsService(salesStandsService, customerService, movieService);
-        return new MainMenu(customerService, movieService, salesStandsService, loyaltyCardService, transactionHistoryService, statisticsService);
+
+        return new Application(customerService, movieService, salesStandsService, loyaltyCardService, statisticsService);
     }
 
 }

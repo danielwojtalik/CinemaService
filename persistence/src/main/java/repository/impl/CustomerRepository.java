@@ -2,7 +2,7 @@ package repository.impl;
 
 
 import model.Customer;
-import repository.AbstractCrudRepository;
+import repository.generic.AbstractCrudRepository;
 
 import java.util.List;
 import java.util.Optional;

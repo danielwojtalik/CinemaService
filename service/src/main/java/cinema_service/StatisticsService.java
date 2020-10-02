@@ -45,6 +45,16 @@ public class StatisticsService {
     }
 
     public Map<Customer, List<Movie>> retrieveCustomerWithMovies() {
+
+        /*
+            1. Pobrac wszystkie SalesStand i pogrupowac po id customera
+            2. W ramach danej entry w mapie:
+              a. pobrac customera o podanym id
+              b. przygotowac metode ktora pobiera filmy wedlug id podanych w kolekcji
+              c. pozniej ewnetualnie mapowanie jezeli ma byc i zwracasz taka mape
+        */
+
+
         final Map<Customer, List<Movie>> customerWithMovies = new HashMap<>();
         final List<Customer> allCustomers = customerService.findAll();
 

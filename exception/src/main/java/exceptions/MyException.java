@@ -1,15 +1,13 @@
 package exceptions;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
+@Getter
+@Setter
 
 public class MyException extends RuntimeException {
 

@@ -1,12 +1,10 @@
 package exceptions;
 
 public enum ExceptionCode {
-    VALIDATION,
     GSON,
     CUSTOMER_SERVICE,
     MOVIE_SERVICE,
     SALES_STAND_SERVICE,
-    STATISTICS_SERVICE,
     REPOSITORY,
     USER_DATA_SERVICE,
     EMAIL_SERVICE,

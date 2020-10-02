@@ -6,6 +6,7 @@ import exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.*;
+import utils.TransactionHistoryUtil;
 import utils.UserDataService;
 
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ import java.util.function.Predicate;
 
 @Log4j
 @RequiredArgsConstructor
-public final class MainMenu {
+public final class Application {
 
     private static final Integer MOVIES_AMOUNT_FOR_FIRST_LOYALTY_CARD = 2;
     private static final String NAME = "Write the name of customer:";
@@ -32,10 +33,9 @@ public final class MainMenu {
     private final MovieService movieService;
     private final SalesStandsService salesStandsService;
     private final LoyaltyCardService loyaltyCardService;
-    private final TransactionHistoryService transactionHistoryService;
     private final StatisticsService statisticsService;
 
-    public void runApplication() {
+    public void run() {
         while (true) {
             try {
                 int option = chooseOption();
@@ -190,7 +190,7 @@ public final class MainMenu {
         List<Movie> moviesAfterFilter = movieService.retrieveAllMoviesForCustomerWithFilters(predicates, customer);
         showMovieFromHistory(moviesAfterFilter);
         //send email
-        String transactionHistory = transactionHistoryService.prepareContentOfTransactionHistory(moviesAfterFilter, customer);
+        String transactionHistory = TransactionHistoryUtil.prepareContentOfTransactionHistory(moviesAfterFilter, customer);
         EmailService.sentEmail(customer.getEmail(), "Transaction history", transactionHistory);
     }
 
