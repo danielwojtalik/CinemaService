@@ -1,6 +1,7 @@
 package criteria;
 
 public enum SearchCriteria {
+
     BY_NAME("Search by name"),
     BY_SURNAME("Search by surname"),
     BY_AGE("Search by age"),
@@ -11,7 +12,9 @@ public enum SearchCriteria {
     BY_RELEASE_DATE("Search by release date");
 
     private String message;
+
     SearchCriteria(String message) {
         this.message = message;
     }
+
 }

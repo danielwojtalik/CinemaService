@@ -1,7 +1,7 @@
 package main;
 
 
-import cinema_service.*;
+import cinemaservice.*;
 import menu.Application;
 import org.apache.log4j.BasicConfigurator;
 import repository.impl.CustomerRepository;

@@ -5,10 +5,10 @@ import org.jdbi.v3.core.Jdbi;
 public class DbConnection {
 
 
-    private static final DbConnection ourInstance = new DbConnection();
+    private static final DbConnection dbInstance = new DbConnection();
 
     public static DbConnection getInstance() {
-        return ourInstance;
+        return dbInstance;
     }
 
     private Jdbi jdbi;

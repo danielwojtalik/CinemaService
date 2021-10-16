@@ -2,7 +2,7 @@ package repository.impl;
 
 
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.extern.log4j.Log4j;
 import model.Customer;
 import model.Movie;
@@ -18,19 +18,19 @@ public class SalesStandsRepository extends AbstractCrudRepository<SalesStand, In
 
     public void addSaleStand(SalesStand salesStand) {
         if (salesStand == null) {
-            throw new MyException("SALES STAND IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("SALES STAND IS NULL", ExceptionCode.REPOSITORY);
         }
         if (salesStand.getCustomerId() == null) {
-            throw new MyException("CUSTOMER IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("CUSTOMER IS NULL", ExceptionCode.REPOSITORY);
         }
         if (salesStand.getMovieId() == null) {
-            throw new MyException("MOVIE IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("MOVIE IS NULL", ExceptionCode.REPOSITORY);
         }
         if (salesStand.getStartDateTime() == null) {
-            throw new MyException("START TIME IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("START TIME IS NULL", ExceptionCode.REPOSITORY);
         }
         if (salesStand.getPriceWithDiscount() == null) {
-            throw new MyException("DISCOUNT IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("DISCOUNT IS NULL", ExceptionCode.REPOSITORY);
         }
         super.add(salesStand);
     }
@@ -41,7 +41,7 @@ public class SalesStandsRepository extends AbstractCrudRepository<SalesStand, In
 
     public int getTicketQuantityBoughtByCustomer(Customer customer) {
         if (customer == null) {
-            throw new MyException("CUSTOMER IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("CUSTOMER IS NULL", ExceptionCode.REPOSITORY);
         }
 
         return jdbi.withHandle(handle -> handle.createQuery("select * from sales_stands where customer_id = :customer_id")
@@ -54,7 +54,7 @@ public class SalesStandsRepository extends AbstractCrudRepository<SalesStand, In
 
     public List<Movie> findAllMoviesForCustomer(Customer customer) {
         if (customer == null) {
-            throw new MyException("CUSTOMER IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("CUSTOMER IS NULL", ExceptionCode.REPOSITORY);
         }
         return jdbi.withHandle(handle -> handle.createQuery("select m.* " +
                 "from sales_stands s join movies m on m.id = s.movie_id where s.customer_id = :id")
@@ -66,7 +66,7 @@ public class SalesStandsRepository extends AbstractCrudRepository<SalesStand, In
 
     public List<Movie> findMoviesInConcreteTimeRange(LocalDateTime startDate, LocalDateTime finishDate) {
         if (startDate == null || finishDate == null) {
-            throw new MyException("AT LEAST ONE OF DATE IS NULL", ExceptionCode.REPOSITORY);
+            throw new CustomException("AT LEAST ONE OF DATE IS NULL", ExceptionCode.REPOSITORY);
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm");
         String startDateWithFormatter = startDate.format(formatter);

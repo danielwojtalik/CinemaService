@@ -1,4 +1,4 @@
-package cinema_service;
+package cinemaservice;
 
 public enum MovieFilteredType {
     GENRE,

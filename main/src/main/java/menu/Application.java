@@ -1,8 +1,8 @@
 package menu;
 
-import cinema_service.*;
-import email_service.EmailService;
-import exceptions.MyException;
+import cinemaservice.*;
+import emailservice.EmailService;
+import exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.*;
@@ -40,25 +40,24 @@ public final class Application {
             try {
                 int option = chooseOption();
                 switch (option) {
-                    case 1 -> option1();
-                    case 2 -> option2();
-                    case 3 -> option3();
-                    case 4 -> option4();
-                    case 5 -> option5();
-                    case 6 -> option6();
-                    case 7 -> option7();
+                    case 1 -> addCustomer();
+                    case 2 -> addMovie();
+                    case 3 -> magangeCustomers();
+                    case 4 -> manageMovies();
+                    case 5 -> sellTicket();
+                    case 6 -> transactionsHistory();
+                    case 7 -> showStatistics();
                     case 8 -> {
-                        option8();
+                        exitProgram();
                         return;
                     }
                 }
-            } catch (MyException e) {
+            } catch (CustomException e) {
                 System.err.println(e.getExceptionInfo().getDescription());
                 System.err.println(e.getExceptionInfo().getExceptionCode());
                 System.err.println(e.getMessage());
             } catch (Exception e) {
-                log.warn("Outside exception");
-                e.printStackTrace();
+                log.error("Outside exception with message: " + e.getMessage());
             }
 
         }
@@ -66,7 +65,7 @@ public final class Application {
 
     private int chooseOption() {
         System.out.println("\n--------------------------------------");
-        System.out.println("1. Add customer");
+        System.out.println("1. Add new customer");
         System.out.println("2. Add new movie");
         System.out.println("3. Manage customers");
         System.out.println("4. Manage movies");
@@ -77,7 +76,7 @@ public final class Application {
         return UserDataService.getIntWithValidator("Choose option:", op -> op > 0 && op < 10);
     }
 
-    private void option1() {
+    private void addCustomer() {
         Customer customer = createCustomer();
         customerService.addCustomer(customer);
     }
@@ -91,7 +90,7 @@ public final class Application {
                 .build();
     }
 
-    private void option2() {
+    private void addMovie() {
         Movie movie = retrieveMovie();
         movieService.addMovie(movie);
     }
@@ -101,24 +100,24 @@ public final class Application {
         return movieService.retrieveMovieFromTitle(movieTitle);
     }
 
-    private void option3() {
+    private void magangeCustomers() {
         CustomerMenu customerMenu = new CustomerMenu(customerService);
         customerMenu.manageCustomers();
     }
 
-    private void option4() {
+    private void manageMovies() {
         MovieMenu movieMenu = new MovieMenu(movieService);
         movieMenu.manageMovies();
     }
 
-    private void option5() {
+    private void sellTicket() {
         // find customer in db
-        Customer customer = getCustomerFromDB();
-        // choose movie by customer
+        customerService.findAll().forEach(System.out::println);
+        int customerId = retriveCustomerIdFromUser("Please write customer id");
+        Customer customer = customerService.findCustomerById(customerId);
         movieService.returnAllMovies().forEach(System.out::println);
-        int kk = 0;
-        int id = retrieveMovieIdFromUser("Please write movie id", mid -> mid > kk);
-        Movie movie = movieService.findMovieById(id);
+        int movieId = retrieveMovieIdFromUser("Please write movie id", mid -> mid > 0);
+        Movie movie = movieService.findMovieById(movieId);
 
         // choose start time of the movie
         Map<Integer, LocalDateTime> availableTime = salesStandsService.getAvailableTime();
@@ -170,7 +169,7 @@ public final class Application {
         return customerService.findByNameSurnameEmail(name, surname, email);
     }
 
-    public LocalDateTime retrieveMovieStartTimeFromUser(Map<Integer, LocalDateTime> availableHours) {
+    private LocalDateTime retrieveMovieStartTimeFromUser(Map<Integer, LocalDateTime> availableHours) {
         DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
         availableHours.forEach((k, v) -> System.out.println("option: (" + k + ") ---> " + timeFormat.format(v)));
         int choseOption = UserDataService.getIntWithValidator("Choose time for start movie",
@@ -178,11 +177,15 @@ public final class Application {
         return availableHours.get(choseOption);
     }
 
-    public int retrieveMovieIdFromUser(String message, Predicate<Integer> callback) {
+    private int retrieveMovieIdFromUser(String message, Predicate<Integer> callback) {
         return UserDataService.getIntWithValidator(message, callback);
     }
 
-    public void option6() {
+    private int retriveCustomerIdFromUser(String message) {
+        return UserDataService.getInt(message);
+    }
+
+    public void transactionsHistory() {
         // find movies bought by customer
         Customer customer = getCustomerFromDB();
         // get customer preferences
@@ -246,11 +249,11 @@ public final class Application {
         return movieType;
     }
 
-    private void option7() {
+    private void showStatistics() {
         new StatisticsMenu(statisticsService).manageStatistics();
     }
 
-    private void option8() {
+    private void exitProgram() {
         log.info("The program has been finished by user");
         UserDataService.close();
     }

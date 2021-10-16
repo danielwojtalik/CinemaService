@@ -1,4 +1,4 @@
-package cinema_service;
+package cinemaservice;
 
 
 import model.Customer;
@@ -55,9 +55,9 @@ public class StatisticsServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        salesStandsService = new SalesStandsService(customerRepository, salesStandsRepository, loyaltyCardRepository, movieRepository);
-        customerService = new CustomerService(customerRepository);
-        statisticsService = new StatisticsService(salesStandsService, customerService, movieService);
+//        salesStandsService = new SalesStandsService(customerRepository, salesStandsRepository, loyaltyCardRepository, movieRepository);
+//        customerService = new CustomerService(customerRepository);
+//        statisticsService = new StatisticsService(salesStandsService, customerService, movieService);
     }
 
     @Test

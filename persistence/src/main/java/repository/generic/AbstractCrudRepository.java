@@ -2,7 +2,7 @@ package repository.generic;
 
 import com.google.common.base.CaseFormat;
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.atteo.evo.inflector.English;
 import org.jdbi.v3.core.Jdbi;
@@ -18,12 +18,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T, ID> {
 
+    private static final String NULL = "null";
+
     protected final Jdbi jdbi = DbConnection.getInstance().getJdbi();
     @SuppressWarnings("unchecked")
     private final Class<T> entityType = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     @SuppressWarnings("unchecked")
     private final Class<ID> idType = (Class<ID>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[1];
-    private static final String NULL = "null";
 
     @Override
     public List<T> findAll() {
@@ -38,7 +39,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
     public Optional<T> findById(ID id) {
 
         if (id == null) {
-            throw new MyException("INVALID ID PARAMETER", ExceptionCode.REPOSITORY);
+            throw new CustomException("INVALID ID PARAMETER", ExceptionCode.REPOSITORY);
         }
 
         return jdbi.withHandle(handle -> handle
@@ -63,7 +64,6 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
     public Optional<T> update(T t) {
         final String sql = "update " + getTableName() + " set " + getParamsForUpdate(t) + " where " + getIdForUpdate(t);
         jdbi.useHandle(handle -> handle.createUpdate(sql).execute());
-
         return Optional.ofNullable(t);
     }
 
@@ -108,7 +108,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                     try {
                         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.getName());
                     } catch (Exception e) {
-                        throw new MyException("PARAMS EXCEPTION", ExceptionCode.REPOSITORY);
+                        throw new CustomException("PARAMS EXCEPTION", ExceptionCode.REPOSITORY);
                     }
                 })
                 .collect(Collectors.joining(", ")) + " ) ";
@@ -127,7 +127,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                         }
                         return field.get(t).toString();
                     } catch (Exception e) {
-                        throw new MyException("ADDED VALUES EXCEPTIONS", ExceptionCode.REPOSITORY);
+                        throw new CustomException("ADDED VALUES EXCEPTIONS", ExceptionCode.REPOSITORY);
                     }
                 })
                 .collect(Collectors.joining(", ")) + " ) ";
@@ -143,7 +143,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                         return !field.getName().equals("id") && (field.get(t) != null || field.getName().equals("loyaltyCardId"));
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
-                        throw new MyException("PARAMS FOR UPDATE EXCEPTION IN FILTER", ExceptionCode.REPOSITORY);
+                        throw new CustomException("PARAMS FOR UPDATE EXCEPTION IN FILTER", ExceptionCode.REPOSITORY);
                     }
                 })
                 .map(field -> {
@@ -156,7 +156,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
                         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.getName())
                                 + " = " + field.get(t);
                     } catch (Exception e) {
-                        throw new MyException("PARAMS FOR UPDATE EXCEPTION IN MAP OPERATION", ExceptionCode.REPOSITORY);
+                        throw new CustomException("PARAMS FOR UPDATE EXCEPTION IN MAP OPERATION", ExceptionCode.REPOSITORY);
                     }
                 })
                 .collect(Collectors.joining(", "));
@@ -168,8 +168,7 @@ public abstract class AbstractCrudRepository<T, ID> implements CrudRepository<T,
             field.setAccessible(true);
             return "id = " + field.get(t);
         } catch (Exception e) {
-            throw new MyException("GET ID FOR UPDATE EXCEPTION", ExceptionCode.REPOSITORY);
-
+            throw new CustomException("GET ID FOR UPDATE EXCEPTION", ExceptionCode.REPOSITORY);
         }
     }
 }

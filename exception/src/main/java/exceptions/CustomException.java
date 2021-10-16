@@ -9,11 +9,11 @@ import lombok.*;
 @Getter
 @Setter
 
-public class MyException extends RuntimeException {
+public class CustomException extends RuntimeException {
 
     private ExceptionInfo exceptionInfo;
 
-    public MyException(String exceptionDescription, ExceptionCode exceptionCode) {
+    public CustomException(String exceptionDescription, ExceptionCode exceptionCode) {
         this.exceptionInfo = new ExceptionInfo(exceptionDescription, exceptionCode);
     }
 }

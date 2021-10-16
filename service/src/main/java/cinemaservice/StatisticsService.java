@@ -1,4 +1,4 @@
-package cinema_service;
+package cinemaservice;
 
 
 import lombok.RequiredArgsConstructor;
@@ -62,6 +62,7 @@ public class StatisticsService {
             List<Movie> moviesBoughtByCustomer = salesStandsService.retrieveAllMoviesBoughtByCustomer(customer);
             customerWithMovies.put(customer, moviesBoughtByCustomer);
         });
+
         return customerWithMovies;
     }
 

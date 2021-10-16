@@ -1,10 +1,10 @@
 package menu;
 
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.Customer;
-import cinema_service.CustomerService;
+import cinemaservice.CustomerService;
 import utils.UserDataService;
 
 import java.util.List;
@@ -21,13 +21,13 @@ public class CustomerMenu {
             try {
                 int option = chooseOption();
                 switch (option) {
-                    case 1 -> option1();
-                    case 2 -> option2();
-                    case 3 -> option3();
-                    case 4 -> option4();
+                    case 1 -> deleteCustomerById();
+                    case 2 -> updateDataOfCustomer();
+                    case 3 -> showAllCustomers();
+                    case 4 -> searchCustomerBy();
                     case 5 -> continueLoop = false;
                 }
-            } catch (MyException e) {
+            } catch (CustomException e) {
                 System.err.println(e.getExceptionInfo().getDescription());
             }
         }
@@ -44,7 +44,7 @@ public class CustomerMenu {
         return UserDataService.getIntWithValidator("Choose option:", op -> op > 0 && op < 6);
     }
 
-    private void option1() {
+    private void deleteCustomerById() {
         int id = retrieveCustomerIdFromUser("Please write Customer ID to delete",
                 result -> result > 0);
         customerService.deleteById(id);
@@ -54,7 +54,7 @@ public class CustomerMenu {
         return UserDataService.getIntWithValidator(message, callback);
     }
 
-    private void option2() {
+    private void updateDataOfCustomer() {
         Customer newCustomer = createCustomerTuUpdate();
         customerService.update(newCustomer);
     }
@@ -66,7 +66,8 @@ public class CustomerMenu {
         Integer age = UserDataService.getIntWithValidator("Write the new age of customer ", a -> a > 10);
         String emailAddress = UserDataService.getStringWithValidator("Write the new email address of customer",
                 UserDataService::isMailAddress);
-        Integer loyaltyCard = UserDataService.getIntWithValidator("Write new loyalty card of customer", lc -> lc >= 0);
+        Integer loyaltyCard = UserDataService.getIntWithValidator("Write new loyalty card of customer (if customer should not have loyaltyCard write 0)", lc -> lc >= 0);
+        loyaltyCard = loyaltyCard != 0 ? loyaltyCard : null;
 
         return Customer.builder()
                 .id(id)
@@ -78,12 +79,12 @@ public class CustomerMenu {
                 .build();
     }
 
-    private void option3() {
+    private void showAllCustomers() {
         List<Customer> customers = customerService.findAll();
         customers.forEach(System.out::println);
     }
 
-    private void option4() {
+    private void searchCustomerBy() {
         List<Customer> customers = customerService.getSearchResult();
         customers.forEach(System.out::println);
     }

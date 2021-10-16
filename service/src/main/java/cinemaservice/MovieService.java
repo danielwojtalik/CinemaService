@@ -1,9 +1,9 @@
-package cinema_service;
+package cinemaservice;
 
 
 import converters.MovieConverter;
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.Boundary;
@@ -32,7 +32,7 @@ public class MovieService {
     }
 
     public Movie findMovieById (Integer id) {
-        return movieRepository.findById(id).orElseThrow(() -> new MyException("MOVIE DOES NOT EXIST",
+        return movieRepository.findById(id).orElseThrow(() -> new CustomException("MOVIE DOES NOT EXIST",
                 ExceptionCode.MOVIE_SERVICE));
     }
 
@@ -47,7 +47,7 @@ public class MovieService {
 
     public void updatePrice(int id, BigDecimal price) {
         Movie movieFromDb = movieRepository.findById(id).orElseThrow(
-                () -> new MyException(String.format("THERE IS NO MOVIE WITH ID - %d", id), ExceptionCode.MOVIE_SERVICE));
+                () -> new CustomException(String.format("THERE IS NO MOVIE WITH ID - %d", id), ExceptionCode.MOVIE_SERVICE));
 
         movieFromDb.setPrice(price.compareTo(BigDecimal.ZERO) <= 0 ? movieFromDb.getPrice() : price);
         movieRepository.update(movieFromDb);
@@ -80,13 +80,13 @@ public class MovieService {
 
     public Movie retrieveMovieFromTitle(String title) {
         if (title == null) {
-            throw new MyException("MOVIE TITLE IS NULL", ExceptionCode.MOVIE_SERVICE);
+            throw new CustomException("MOVIE TITLE IS NULL", ExceptionCode.MOVIE_SERVICE);
         }
         String fullPathToFile = new StringBuilder(PATH_TO_RESOURCES_FOLDER)
                 .append(title)
                 .append(".json").toString();
         MovieConverter movieConverter = new MovieConverter(fullPathToFile);
-        return movieConverter.fromJson().orElseThrow(() -> new MyException("CAN NOT FIND MOVIE IN RESOURCES",
+        return movieConverter.fromJson().orElseThrow(() -> new CustomException("CAN NOT FIND MOVIE IN RESOURCES",
                 ExceptionCode.MOVIE_SERVICE));
     }
 

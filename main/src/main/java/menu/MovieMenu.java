@@ -1,8 +1,8 @@
 package menu;
 
-import cinema_service.MovieService;
+import cinemaservice.MovieService;
 import criteria.SearchCriteria;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.Boundary;
@@ -33,7 +33,7 @@ public class MovieMenu {
                     case 4 -> option4();
                     case 5 -> continueLoop = false;
                 }
-            } catch (MyException e) {
+            } catch (CustomException e) {
                 System.err.println(e.getExceptionInfo().getDescription());
                 System.err.println(e.getExceptionInfo().getExceptionDate());
             }

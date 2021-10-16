@@ -162,8 +162,6 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.0</version>
                     <configuration>
-                        <release>13</release>
-                        <compilerArgs>--enable-preview</compilerArgs>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -179,7 +177,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <MainClass>src.main.java.main.Main</MainClass>
+                                <MainClass>main.src.main.java.main.Main</MainClass>
                             </manifest>
                         </archive>
                     </configuration>
@@ -205,8 +203,9 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.6.0</version>
                     <configuration>
-                        <arguments>--enable-preview</arguments>
                         <mainClass>main.Main</mainClass>
+                        <classpathScope>test</classpathScope>
+                        <includePluginDependencies>true</includePluginDependencies>
                     </configuration>
                 </plugin>
             </plugins>

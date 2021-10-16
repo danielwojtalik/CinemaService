@@ -1,7 +1,7 @@
 package utils;
 
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.Customer;
@@ -25,7 +25,7 @@ public class TransactionHistoryUtil {
 
     private static String formatMovieList(List<Movie> movies) {
         if (movies == null) {
-            throw new MyException("movie list is null", ExceptionCode.TRANSACTION_HISTORY_SERVICE);
+            throw new CustomException("movie list is null", ExceptionCode.TRANSACTION_HISTORY_SERVICE);
         }
 
         String formattedMovies = null;

@@ -2,7 +2,7 @@ package repository.impl;
 
 
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import model.LoyaltyCard;
 import repository.generic.AbstractCrudRepository;
 
@@ -13,7 +13,7 @@ public class LoyaltyCardRepository extends AbstractCrudRepository<LoyaltyCard, I
 
     public Optional<LoyaltyCard> findLastLoyaltyCard() {
         Integer biggestId = findAll().stream().map(LoyaltyCard::getId).max(Comparator.naturalOrder()).orElseThrow(
-                () -> new MyException("THERE IS NO BIGGEST ELEMENT", ExceptionCode.LOYALTY_CARD_REPOSITORY));
+                () -> new CustomException("THERE IS NO BIGGEST ELEMENT", ExceptionCode.LOYALTY_CARD_REPOSITORY));
         return findById(biggestId);
 
     }

@@ -2,7 +2,7 @@ package converters;
 
 import com.google.gson.*;
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.extern.log4j.Log4j;
 
 import java.io.FileReader;
@@ -37,11 +37,11 @@ public abstract class JsonConverter<T> {
     public void toJson(final T element) {
         try (FileWriter fileWriter = new FileWriter(jsonFileName)) {
             if (element == null) {
-                throw new MyException("ELEMENT TO PARSE IS NULL", ExceptionCode.GSON);
+                throw new CustomException("ELEMENT TO PARSE IS NULL", ExceptionCode.GSON);
             }
             gson.toJson(element, fileWriter);
         } catch (Exception e) {
-            throw new MyException(e.getMessage(), ExceptionCode.GSON);
+            throw new CustomException(e.getMessage(), ExceptionCode.GSON);
         }
     }
 
@@ -50,7 +50,7 @@ public abstract class JsonConverter<T> {
         try (FileReader fileReader = new FileReader(jsonFileName)) {
             return Optional.of(gson.fromJson(fileReader, type));
         } catch (Exception e) {
-            throw new MyException(e.getMessage(), ExceptionCode.GSON);
+            throw new CustomException(e.getMessage(), ExceptionCode.GSON);
         }
     }
 }

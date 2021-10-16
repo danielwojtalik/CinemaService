@@ -1,6 +1,6 @@
 package menu;
 
-import cinema_service.StatisticsService;
+import cinemaservice.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.Customer;
@@ -55,7 +55,7 @@ public class StatisticsMenu {
                         + value.getSurname() + " with id  = " + value.getId()));
 
         HtmlCreator.createHtmlWithBestClientInEachCategory(bestCustomersInMovieTypes);
-        log.info("Html file is created in: " + HtmlCreator.getBestClientInCategoryHtmlPath());
+        log.info("Html file is created in: " + HtmlCreator.getBestClientInCategoryHtml());
     }
 
     private void option2() {
@@ -70,7 +70,7 @@ public class StatisticsMenu {
 
         HtmlCreator.createHtmlOfAllTicketSalesInEachCategoryInTimeRange(ticketSoldInCategory,
                 startDate, finishDate);
-        log.info("Html file is created in: " + HtmlCreator.getNumberOfMoviesInEachCategory());
+        log.info("Html file is created in: " + HtmlCreator.getNumberOfMoviesInEachCategoryHtml());
 
     }
 
@@ -83,7 +83,7 @@ public class StatisticsMenu {
                 .collect(Collectors.joining("; "))));
 
         HtmlCreator.createHtmlWithNumberOfTicketSoldForEachCustomer(customersWithAmountOfParticularMovie);
-        log.info("Html file is created in: " + HtmlCreator.getNumberOfTicketsForEachMovieForCustomerHtmlPath());
+        log.info("Html file is created in: " + HtmlCreator.getNumberOfTicketsForEachMovieForCustomerHtml());
 
     }
 
@@ -92,7 +92,7 @@ public class StatisticsMenu {
         System.out.println("\n TOTAL PRICE FOR ALL TICKETS IS..." + totalIncome);
 
         HtmlCreator.createHtmlWitTotalTicketCostInCinema(totalIncome);
-        log.info("Html file is created in: " + HtmlCreator.getTotalIncomeHtmlPath());
+        log.info("Html file is created in: " + HtmlCreator.getTotalIncomeHtml());
 
     }
 }

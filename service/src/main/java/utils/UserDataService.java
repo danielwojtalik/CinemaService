@@ -2,7 +2,7 @@ package utils;
 
 
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,7 +39,7 @@ public final class UserDataService {
         try {
             return Integer.parseInt(sc.nextLine());
         } catch (Exception e) {
-            throw new MyException("WRONG INT INPUT", ExceptionCode.USER_DATA_SERVICE);
+            throw new CustomException("WRONG INT INPUT", ExceptionCode.USER_DATA_SERVICE);
         }
     }
 
@@ -49,7 +49,7 @@ public final class UserDataService {
         try {
             value = Integer.parseInt(sc.nextLine());
         } catch (NumberFormatException e) {
-            throw new MyException("WRONG INT INPUT", ExceptionCode.USER_DATA_SERVICE);
+            throw new CustomException("WRONG INT INPUT", ExceptionCode.USER_DATA_SERVICE);
         }
         if (validator != null && validator.test(value)) {
             return value;
@@ -65,7 +65,7 @@ public final class UserDataService {
         try {
             value = new BigDecimal(sc.nextLine());
         } catch (Exception e) {
-            throw new MyException("WRONG BIGDECIMAL INPUT", ExceptionCode.USER_DATA_SERVICE);
+            throw new CustomException("WRONG BIGDECIMAL INPUT", ExceptionCode.USER_DATA_SERVICE);
         }
         if (validator.test(value)) {
             return value;
@@ -90,7 +90,7 @@ public final class UserDataService {
         try {
             localDate = LocalDate.parse(dateFromUser, formatter);
         } catch (Exception e) {
-            throw new MyException("CAN NOT GET DATE FROM USER", ExceptionCode.USER_DATA_SERVICE);
+            throw new CustomException("CAN NOT GET DATE FROM USER", ExceptionCode.USER_DATA_SERVICE);
         }
         return localDate;
     }

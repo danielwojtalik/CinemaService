@@ -1,8 +1,8 @@
-package email_service;
+package emailservice;
 
 
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.*;
@@ -26,7 +26,7 @@ public final class EmailService {
             log.info("Email has been sent successfully");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new MyException("Send email exception: " + e.getMessage(), ExceptionCode.EMAIL_SERVICE);
+            throw new CustomException("Send email exception: " + e.getMessage(), ExceptionCode.EMAIL_SERVICE);
         }
     }
 
@@ -37,7 +37,7 @@ public final class EmailService {
             mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
             mimeMessage.setSubject(title);
         } catch (Exception e) {
-            throw new MyException("prepare email message exception: " + e.getMessage(), ExceptionCode.EMAIL_SERVICE);
+            throw new CustomException("prepare email message exception: " + e.getMessage(), ExceptionCode.EMAIL_SERVICE);
         }
     }
 

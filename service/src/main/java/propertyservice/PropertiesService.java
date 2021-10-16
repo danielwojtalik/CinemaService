@@ -1,7 +1,7 @@
-package property_service;
+package propertyservice;
 
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -21,7 +21,7 @@ public class PropertiesService {
             prop.load(input);
             return prop.getProperty(propertyType);
         } catch (Exception e) {
-            throw new MyException("PROPERTIES SERVICE ERROR", ExceptionCode.PROPERTIES_SERVICE);
+            throw new CustomException("PROPERTIES SERVICE ERROR", ExceptionCode.PROPERTIES_SERVICE);
         }
     }
 }

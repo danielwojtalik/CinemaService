@@ -1,7 +1,7 @@
-package cinema_service;
+package cinemaservice;
 
 import exceptions.ExceptionCode;
-import exceptions.MyException;
+import exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import model.Customer;
@@ -75,7 +75,7 @@ public class SalesStandsService {
 
             loyaltyCardRepository.add(loyaltyCard);
             LoyaltyCard lastAddedLoyaltyCard = loyaltyCardRepository.findLastLoyaltyCard().orElseThrow(
-                    () -> new MyException("LOYALTY CARD IS NULL", ExceptionCode.REPOSITORY)
+                    () -> new CustomException("LOYALTY CARD IS NULL", ExceptionCode.REPOSITORY)
             );
             customer.setLoyaltyCardId(lastAddedLoyaltyCard.getId());
             customerRepository.update(customer);
@@ -85,7 +85,7 @@ public class SalesStandsService {
 
     public void offerNewCardIfPossible(Customer customer, boolean isWilling) {
         LoyaltyCard loyaltyCard = loyaltyCardRepository.findById(customer.getLoyaltyCardId()).orElseThrow(
-                () -> new MyException("LOYALTY CARD IS NULL", ExceptionCode.REPOSITORY)
+                () -> new CustomException("LOYALTY CARD IS NULL", ExceptionCode.REPOSITORY)
         );
         if (isWilling) {
             BigDecimal currentDiscount = loyaltyCard.getDiscount();
@@ -101,7 +101,7 @@ public class SalesStandsService {
                     .build();
             loyaltyCardRepository.add(newLoyaltyCard);
             LoyaltyCard loyaltyCardFromDB = loyaltyCardRepository.findLastLoyaltyCard().orElseThrow(
-                    () -> new MyException("THERE IS ANY LOYALTY CARD IN DB", ExceptionCode.SALES_STAND_SERVICE)
+                    () -> new CustomException("THERE IS ANY LOYALTY CARD IN DB", ExceptionCode.SALES_STAND_SERVICE)
             );
             customer.setLoyaltyCardId(loyaltyCardFromDB.getId());
             customerRepository.update(customer);
@@ -116,7 +116,7 @@ public class SalesStandsService {
 
     public int getTotalTicketAmountBoughtByCustomer(Customer customer) {
         if (customer == null) {
-            throw new MyException("CUSTOMER IS NULL", ExceptionCode.SALES_STAND_SERVICE);
+            throw new CustomException("CUSTOMER IS NULL", ExceptionCode.SALES_STAND_SERVICE);
         }
         return salesStandsRepository.getTicketQuantityBoughtByCustomer(customer);
     }
@@ -146,7 +146,7 @@ public class SalesStandsService {
         List<Movie> movies = new ArrayList<>();
         salesStands.forEach(st ->
                 movies.add(movieRepository.findById(st.getMovieId()).orElseThrow(
-                        () -> new MyException("MOVIE DOES NOT EXIST", ExceptionCode.SALES_STAND_SERVICE))));
+                        () -> new CustomException("MOVIE DOES NOT EXIST", ExceptionCode.SALES_STAND_SERVICE))));
         return movies;
     }
 
